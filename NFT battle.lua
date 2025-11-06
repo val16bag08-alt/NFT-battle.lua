@@ -9,6 +9,7 @@ local Window = Rayfield:CreateWindow({
     KeySystem = false
 })
 
+-- Вкладки
 local InventoryTab = Window:CreateTab("Inventory", nil)
 local MixCasesTab = Window:CreateTab("MIX Cases", nil)
 local SpecialCasesTab = Window:CreateTab("SPECIAL Cases", nil)
@@ -40,7 +41,7 @@ local glitchEnabled = false
 local dreamEnabled = false
 local bloodyNightEnabled = false
 
--- Inventory
+-- Inventory Toggle
 InventoryTab:CreateToggle({
     Name = "Auto Sell ALL",
     CurrentValue = false,
@@ -49,7 +50,7 @@ InventoryTab:CreateToggle({
     end
 })
 
--- MIX Cases
+-- MIX Cases Toggles
 MixCasesTab:CreateToggle({Name = "Auto Trash Case", CurrentValue = false, Callback = function(Value) trashEnabled = Value end})
 MixCasesTab:CreateToggle({Name = "Auto Beggar Case", CurrentValue = false, Callback = function(Value) beggarEnabled = Value end})
 MixCasesTab:CreateToggle({Name = "Auto Plodder Case", CurrentValue = false, Callback = function(Value) plodderEnabled = Value end})
@@ -58,20 +59,20 @@ MixCasesTab:CreateToggle({Name = "Auto Manager Case", CurrentValue = false, Call
 MixCasesTab:CreateToggle({Name = "Auto Director Case", CurrentValue = false, Callback = function(Value) directorEnabled = Value end})
 MixCasesTab:CreateToggle({Name = "Auto Oligarch Case", CurrentValue = false, Callback = function(Value) oligarchEnabled = Value end})
 
--- NFT Cases
+-- NFT Cases Toggles
 NFTCasesTab:CreateToggle({Name = "Auto Gold Case", CurrentValue = false, Callback = function(Value) goldEnabled = Value end})
 NFTCasesTab:CreateToggle({Name = "Auto Dark Case", CurrentValue = false, Callback = function(Value) darkEnabled = Value end})
 NFTCasesTab:CreateToggle({Name = "Auto Palm Case", CurrentValue = false, Callback = function(Value) palmEnabled = Value end})
 NFTCasesTab:CreateToggle({Name = "Auto Burj Case", CurrentValue = false, Callback = function(Value) burjEnabled = Value end})
 NFTCasesTab:CreateToggle({Name = "Auto Luxury Case", CurrentValue = false, Callback = function(Value) luxuryEnabled = Value end})
 
--- CARS Cases
+-- CARS Cases Toggles
 CarsCasesTab:CreateToggle({Name = "Auto M5 F90 Case", CurrentValue = false, Callback = function(Value) m5Enabled = Value end})
 CarsCasesTab:CreateToggle({Name = "Auto G63 Case", CurrentValue = false, Callback = function(Value) g63Enabled = Value end})
 CarsCasesTab:CreateToggle({Name = "Auto Porsche 911 Case", CurrentValue = false, Callback = function(Value) p911Enabled = Value end})
 CarsCasesTab:CreateToggle({Name = "Auto URUS Case", CurrentValue = false, Callback = function(Value) urusEnabled = Value end})
 
--- SPECIAL Cases
+-- SPECIAL Cases Toggles
 SpecialCasesTab:CreateToggle({Name = "Auto Frozen Heart Case", CurrentValue = false, Callback = function(Value) frozenHeartEnabled = Value end})
 SpecialCasesTab:CreateToggle({Name = "Auto Bubble Gum Case", CurrentValue = false, Callback = function(Value) bubbleGumEnabled = Value end})
 SpecialCasesTab:CreateToggle({Name = "Auto Cats Case", CurrentValue = false, Callback = function(Value) catsEnabled = Value end})
@@ -79,55 +80,215 @@ SpecialCasesTab:CreateToggle({Name = "Auto Glitch Case", CurrentValue = false, C
 SpecialCasesTab:CreateToggle({Name = "Auto Dream Case", CurrentValue = false, Callback = function(Value) dreamEnabled = Value end})
 SpecialCasesTab:CreateToggle({Name = "Auto Bloody Night Case", CurrentValue = false, Callback = function(Value) bloodyNightEnabled = Value end})
 
--- Функция запуска циклов
-local function startCaseLoop(flag, caseName)
-    task.spawn(function()
-        while true do
-            if flag then
-                local args = {caseName,10}
-                game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("OpenCase"):InvokeServer(unpack(args))
-            end
-            task.wait(0.01)
-        end
-    end)
-end
+-- === ЦИКЛЫ ДЛЯ ВСЕХ КЕЙСОВ ===
 
 -- MIX Cases
-startCaseLoop(trashEnabled, "Trash")
-startCaseLoop(beggarEnabled, "Beggar")
-startCaseLoop(plodderEnabled, "Plodder")
-startCaseLoop(clerkEnabled, "Office Clerk")
-startCaseLoop(managerEnabled, "Manager")
-startCaseLoop(directorEnabled, "Director")
-startCaseLoop(oligarchEnabled, "Oligarch")
+task.spawn(function()
+    while true do
+        if trashEnabled then
+            game.ReplicatedStorage.Events.OpenCase:InvokeServer("Trash", 10)
+        end
+        task.wait(0.01)
+    end
+end)
+
+task.spawn(function()
+    while true do
+        if beggarEnabled then
+            game.ReplicatedStorage.Events.OpenCase:InvokeServer("Beggar", 10)
+        end
+        task.wait(0.01)
+    end
+end)
+
+task.spawn(function()
+    while true do
+        if plodderEnabled then
+            game.ReplicatedStorage.Events.OpenCase:InvokeServer("Plodder", 10)
+        end
+        task.wait(0.01)
+    end
+end)
+
+task.spawn(function()
+    while true do
+        if clerkEnabled then
+            game.ReplicatedStorage.Events.OpenCase:InvokeServer("Office Clerk", 10)
+        end
+        task.wait(0.01)
+    end
+end)
+
+task.spawn(function()
+    while true do
+        if managerEnabled then
+            game.ReplicatedStorage.Events.OpenCase:InvokeServer("Manager", 10)
+        end
+        task.wait(0.01)
+    end
+end)
+
+task.spawn(function()
+    while true do
+        if directorEnabled then
+            game.ReplicatedStorage.Events.OpenCase:InvokeServer("Director", 10)
+        end
+        task.wait(0.01)
+    end
+end)
+
+task.spawn(function()
+    while true do
+        if oligarchEnabled then
+            game.ReplicatedStorage.Events.OpenCase:InvokeServer("Oligarch", 10)
+        end
+        task.wait(0.01)
+    end
+end)
 
 -- NFT Cases
-startCaseLoop(goldEnabled, "Gold")
-startCaseLoop(darkEnabled, "Dark")
-startCaseLoop(palmEnabled, "Palm")
-startCaseLoop(burjEnabled, "Burj")
-startCaseLoop(luxuryEnabled, "Luxury")
+task.spawn(function()
+    while true do
+        if goldEnabled then
+            game.ReplicatedStorage.Events.OpenCase:InvokeServer("Gold", 10)
+        end
+        task.wait(0.01)
+    end
+end)
+
+task.spawn(function()
+    while true do
+        if darkEnabled then
+            game.ReplicatedStorage.Events.OpenCase:InvokeServer("Dark", 10)
+        end
+        task.wait(0.01)
+    end
+end)
+
+task.spawn(function()
+    while true do
+        if palmEnabled then
+            game.ReplicatedStorage.Events.OpenCase:InvokeServer("Palm", 10)
+        end
+        task.wait(0.01)
+    end
+end)
+
+task.spawn(function()
+    while true do
+        if burjEnabled then
+            game.ReplicatedStorage.Events.OpenCase:InvokeServer("Burj", 10)
+        end
+        task.wait(0.01)
+    end
+end)
+
+task.spawn(function()
+    while true do
+        if luxuryEnabled then
+            game.ReplicatedStorage.Events.OpenCase:InvokeServer("Luxury", 10)
+        end
+        task.wait(0.01)
+    end
+end)
 
 -- CARS Cases
-startCaseLoop(m5Enabled, "M5 F90")
-startCaseLoop(g63Enabled, "G63")
-startCaseLoop(p911Enabled, "Porsche 911")
-startCaseLoop(urusEnabled, "URUS")
+task.spawn(function()
+    while true do
+        if m5Enabled then
+            game.ReplicatedStorage.Events.OpenCase:InvokeServer("M5 F90", 10)
+        end
+        task.wait(0.01)
+    end
+end)
+
+task.spawn(function()
+    while true do
+        if g63Enabled then
+            game.ReplicatedStorage.Events.OpenCase:InvokeServer("G63", 10)
+        end
+        task.wait(0.01)
+    end
+end)
+
+task.spawn(function()
+    while true do
+        if p911Enabled then
+            game.ReplicatedStorage.Events.OpenCase:InvokeServer("Porsche 911", 10)
+        end
+        task.wait(0.01)
+    end
+end)
+
+task.spawn(function()
+    while true do
+        if urusEnabled then
+            game.ReplicatedStorage.Events.OpenCase:InvokeServer("URUS", 10)
+        end
+        task.wait(0.01)
+    end
+end)
 
 -- SPECIAL Cases
-startCaseLoop(frozenHeartEnabled, "Frozen Heart")
-startCaseLoop(bubbleGumEnabled, "Bubble Gum")
-startCaseLoop(catsEnabled, "Cats")
-startCaseLoop(glitchEnabled, "Glitch")
-startCaseLoop(dreamEnabled, "Dream")
-startCaseLoop(bloodyNightEnabled, "Bloody Night")
+task.spawn(function()
+    while true do
+        if frozenHeartEnabled then
+            game.ReplicatedStorage.Events.OpenCase:InvokeServer("Frozen Heart", 10)
+        end
+        task.wait(0.01)
+    end
+end)
 
--- Inventory Sell
+task.spawn(function()
+    while true do
+        if bubbleGumEnabled then
+            game.ReplicatedStorage.Events.OpenCase:InvokeServer("Bubble Gum", 10)
+        end
+        task.wait(0.01)
+    end
+end)
+
+task.spawn(function()
+    while true do
+        if catsEnabled then
+            game.ReplicatedStorage.Events.OpenCase:InvokeServer("Cats", 10)
+        end
+        task.wait(0.01)
+    end
+end)
+
+task.spawn(function()
+    while true do
+        if glitchEnabled then
+            game.ReplicatedStorage.Events.OpenCase:InvokeServer("Glitch", 10)
+        end
+        task.wait(0.01)
+    end
+end)
+
+task.spawn(function()
+    while true do
+        if dreamEnabled then
+            game.ReplicatedStorage.Events.OpenCase:InvokeServer("Dream", 10)
+        end
+        task.wait(0.01)
+    end
+end)
+
+task.spawn(function()
+    while true do
+        if bloodyNightEnabled then
+            game.ReplicatedStorage.Events.OpenCase:InvokeServer("Bloody Night", 10)
+        end
+        task.wait(0.01)
+    end
+end)
+
+-- Inventory Sell Loop
 task.spawn(function()
     while true do
         if sellEnabled then
-            local args = {"Sell","ALL",false}
-            game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Inventory"):FireServer(unpack(args))
+            game.ReplicatedStorage.Events.Inventory:FireServer("Sell", "ALL", false)
         end
         task.wait(0.01)
     end
