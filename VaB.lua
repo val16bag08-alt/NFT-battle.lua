@@ -966,107 +966,101 @@
 	})
 
 TargetGroup:AddToggle("LoopKickToggle", {
-    Text = "kick (spam grab)",
-    Default = false,
-    Callback = function(on)
-        kickLoopEnabled = on
-        local target = selectedKickPlayer
+	Text = "Loop Kick (spam grab)",
+	Default = false,
+	Callback = function(on)
+		kickLoopEnabled = on
+		local target = selectedKickPlayer
+		if on and not target then 
+			if Toggles.LoopKickToggle then Toggles.LoopKickToggle:SetValue(false) end
+			return 
+		end
+		if not on then
+			kickLoopEnabled = false
+			return
+		end
 
-        if on and not target then
-            if Toggles.LoopKickToggle then Toggles.LoopKickToggle:SetValue(false) end
-            return
-        end
+		task.spawn(function()
+			local RS = game:GetService("ReplicatedStorage")
+			local RunService = game:GetService("RunService")
+			local GE = RS:WaitForChild("GrabEvents")
+			
+			while kickLoopEnabled do
+				if not target or not target.Parent then
+					kickLoopEnabled = false
+					if Toggles.LoopKickToggle then Toggles.LoopKickToggle:SetValue(false) end
+					break
+				end
 
-        if not on then
-            kickLoopEnabled = false
-            return
-        end
+				local tChar = target.Character
+				local tRoot = tChar and (tChar:FindFirstChild("HumanoidRootPart") or tChar:FindFirstChild("PlayerCharacterLocationDetector"))
+				local tHum = tChar and tChar:FindFirstChild("Humanoid")
+				
+				local myChar = Player.Character
+				local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
 
-        task.spawn(function()  
-            local RS = game:GetService("ReplicatedStorage")  
-            local RunService = game:GetService("RunService")  
-            local GE = RS:WaitForChild("GrabEvents")  
-
-            while kickLoopEnabled do  
-                if not target or not target.Parent then  
-                    kickLoopEnabled = false  
-                    if Toggles.LoopKickToggle then Toggles.LoopKickToggle:SetValue(false) end  
-                    break  
-                end  
-
-                local tChar = target.Character  
-
-                -- ✔ Всегда используем PCLD если он есть
-                local tPCLD = tChar and tChar:FindFirstChild("PlayerCharacterLocationDetector")
-                local tRoot = tPCLD or (tChar and tChar:FindFirstChild("HumanoidRootPart"))
-
-                local tHum = tChar and tChar:FindFirstChild("Humanoid")  
-                local myChar = Player.Character  
-                local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")  
-
-                if tRoot and tHum and tHum.Health > 0 and myRoot then  
-                    local dist = (myRoot.Position - tRoot.Position).Magnitude  
-
-                    if dist > 25 then  
-                        local savedPos = myRoot.CFrame  
-                        myRoot.CFrame = tRoot.CFrame * CFrame.new(0, 0, 2)  
-                        myRoot.Velocity = Vector3.zero  
-
-                        local t = tick()  
-                        while tick() - t < 0.45 do  
-                            if not kickLoopEnabled then break end  
-
-                            if tRoot then  
-                                myRoot.CFrame = tRoot.CFrame * CFrame.new(0, 0, 2)  
-                                myRoot.Velocity = Vector3.zero  
-
-                                tRoot.AssemblyLinearVelocity = Vector3.zero  
-                                tRoot.AssemblyAngularVelocity = Vector3.zero  
-                                tRoot.Velocity = Vector3.zero  
-                                tRoot.RotVelocity = Vector3.zero  
-
-                                pcall(function()  
-                                    GE.SetNetworkOwner:FireServer(tRoot, myRoot.CFrame)  
-                                end)  
-                            end  
-                            RunService.Heartbeat:Wait()  
-                        end  
-
-                        if myRoot then  
-                            myRoot.CFrame = savedPos  
-                            myRoot.Velocity = Vector3.zero  
-                        end  
-
-                        if tRoot then  
-                            tRoot.CFrame = savedPos * CFrame.new(0, 15, 0)  
-                            tRoot.AssemblyLinearVelocity = Vector3.zero  
-                        end  
-
-                    else  
-                        local lockPos = myRoot.CFrame * CFrame.new(0, 15, 0)  
-
-                        tRoot.CFrame = lockPos  
-                        tRoot.AssemblyLinearVelocity = Vector3.zero  
-                        tRoot.AssemblyAngularVelocity = Vector3.zero  
-                        tRoot.Velocity = Vector3.zero  
-                        tRoot.RotVelocity = Vector3.zero  
-
-                        tHum.PlatformStand = true  
-                        tHum.Sit = true  
-
-                        pcall(function()  
-                            GE.SetNetworkOwner:FireServer(tRoot, lockPos)  
-                            GE.DestroyGrabLine:FireServer(tRoot)  
-                            GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)  
-                            GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)  
-                        end)  
-                    end  
-                end  
-
-                RunService.Heartbeat:Wait()  
-            end  
-        end)  
-    end
+				if tRoot and tHum and tHum.Health > 0 and myRoot then
+					local dist = (myRoot.Position - tRoot.Position).Magnitude
+					
+					if dist > 25 then
+						local savedPos = myRoot.CFrame
+						myRoot.CFrame = tRoot.CFrame * CFrame.new(0, 0, 2)
+						myRoot.Velocity = Vector3.zero
+						
+						local t = tick()
+						while tick() - t < 0.45 do
+							if not kickLoopEnabled then break end
+							
+							if tRoot then
+								myRoot.CFrame = tRoot.CFrame * CFrame.new(0, 0, 2)
+								myRoot.Velocity = Vector3.zero
+								
+								tRoot.AssemblyLinearVelocity = Vector3.zero
+								tRoot.AssemblyAngularVelocity = Vector3.zero
+								tRoot.Velocity = Vector3.zero
+								tRoot.RotVelocity = Vector3.zero
+								
+								pcall(function()
+									GE.SetNetworkOwner:FireServer(tRoot, myRoot.CFrame)
+								end)
+							end
+							RunService.Heartbeat:Wait()
+						end
+						
+						if myRoot then
+							myRoot.CFrame = savedPos
+							myRoot.Velocity = Vector3.zero
+						end
+						
+						if tRoot then
+							tRoot.CFrame = savedPos * CFrame.new(0, 15, 0)
+							tRoot.AssemblyLinearVelocity = Vector3.zero
+						end
+					
+					else
+						local lockPos = myRoot.CFrame * CFrame.new(0, 15, 0)
+						
+						tRoot.CFrame = lockPos
+						tRoot.AssemblyLinearVelocity = Vector3.zero
+						tRoot.AssemblyAngularVelocity = Vector3.zero
+						tRoot.Velocity = Vector3.zero
+						tRoot.RotVelocity = Vector3.zero
+						
+						tHum.PlatformStand = true
+						tHum.Sit = true
+						
+						pcall(function()
+							GE.SetNetworkOwner:FireServer(tRoot, lockPos)
+							GE.DestroyGrabLine:FireServer(tRoot)
+							GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
+							GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
+						end)
+					end
+				end
+				RunService.Heartbeat:Wait()
+			end
+		end)
+	end
 })
 
 	TargetGroup:AddToggle("LoopKillToggle", {
