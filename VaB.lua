@@ -1002,7 +1002,7 @@ TargetGroup:AddToggle("LoopKickToggle", {
 				if tRoot and tHum and tHum.Health > 0 and myRoot then
 					local dist = (myRoot.Position - tRoot.Position).Magnitude
 					
-					if dist > 5 then
+					if dist > 10 then
 						local savedPos = myRoot.CFrame
 						myRoot.CFrame = tRoot.CFrame * CFrame.new(0, 0, 2)
 						myRoot.Velocity = Vector3.zero
