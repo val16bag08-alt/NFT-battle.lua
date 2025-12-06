@@ -1022,10 +1022,9 @@ TargetGroup:AddToggle("LoopKickToggle", {
 								
 								pcall(function()
 									GE.SetNetworkOwner:FireServer(tRoot, myRoot.CFrame)
-												task.wait(0.1)
 								end)
 							end
-							RunService.Heartbeat:Wait()
+							RunService.Heartbeat:Wait(0.1)
 						end
 						
 						if myRoot then
