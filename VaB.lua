@@ -1038,29 +1038,124 @@ TargetGroup:AddToggle("LoopKickToggle", {
 						end
 					
 					else
-						local lockPos = myRoot.CFrame * CFrame.new(0, 15, 0)
-						
-						tRoot.CFrame = lockPos
-						tRoot.AssemblyLinearVelocity = Vector3.zero
-						tRoot.AssemblyAngularVelocity = Vector3.zero
-						tRoot.Velocity = Vector3.zero
-						tRoot.RotVelocity = Vector3.zero
-						
-						tHum.PlatformStand = true
-						tHum.Sit = true
-						
-						pcall(function()
-							GE.SetNetworkOwner:FireServer(tRoot, lockPos)
-							GE.DestroyGrabLine:FireServer(tRoot)
-							GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
-							GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
-						end)
-					end
-				end
-				RunService.Heartbeat:Wait()
-			end
-		end)
-	end
+-- // Переменная для выбранного игрока
+local selectedKickPlayer = nil -- <- сюда будет подставляться результат getPlayerFromSelection
+
+---------------------------------------
+-- // LoopKickToggleCallback
+---------------------------------------
+local function LoopKickToggleCallback(on)
+    kickLoopEnabled = on
+    local target = selectedKickPlayer
+    if on and not target then
+        warn("Select target first")
+        OrionLib.Flags["LoopKickToggle"]:Set(false)
+        return
+    end
+    if not on then return end
+
+    task.spawn(function()
+        local myChar = Player.Character
+        local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
+        local savedPos = myRoot and myRoot.CFrame
+
+        local RS = game:GetService("ReplicatedStorage")
+        local GE = RS:WaitForChild("GrabEvents")
+        local PlotItems = workspace:WaitForChild("PlotItems")
+        local PlayersInPlots = PlotItems:WaitForChild("PlayersInPlots")
+
+        local grabTimer = nil
+        local isDragging = false
+        if not myRoot then return end
+
+        OrionLib.Flags["LoopKickToggle"]:Set(true)
+
+        while kickLoopEnabled do
+            if not target or not target.Parent then
+                kickLoopEnabled = false
+                OrionLib.Flags["LoopKickToggle"]:Set(false)
+                break
+            end
+            if not isDragging and PlayersInPlots:FindFirstChild(target.Name) then
+                task.wait(1)
+                continue
+            end
+
+            local tChar = target.Character
+            local tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
+            local tHum = tChar and tChar:FindFirstChild("Humanoid")
+            myChar = Player.Character
+            myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
+
+            if tRoot and tHum and tHum.Health > 0 and myRoot then
+                tRoot.AssemblyLinearVelocity = Vector3.zero
+                tRoot.AssemblyAngularVelocity = Vector3.zero
+                tRoot.Velocity = Vector3.zero
+                tRoot.RotVelocity = Vector3.zero
+
+                if isDragging then
+                    local distFromBase = (tRoot.Position - savedPos.Position).Magnitude
+                    local amIAtBase = (myRoot.Position - savedPos.Position).Magnitude < 10
+                    if amIAtBase and distFromBase > 25 then
+                        isDragging = false
+                        grabTimer = nil
+                    end
+                end
+
+                if not isDragging then
+                    myRoot.CFrame = tRoot.CFrame * CFrame.new(0, 0, 2)
+                    myRoot.Velocity = Vector3.zero
+                    pcall(function()
+                        GE.SetNetworkOwner:FireServer(tRoot, myRoot.CFrame)
+                        GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
+                        GE.DestroyGrabLine:FireServer(tRoot)
+                    end)
+                    if not grabTimer then grabTimer = tick() end
+                    if grabTimer and tick() - grabTimer > 0.35 then isDragging = true end
+                else
+                    myRoot.CFrame = savedPos
+                    myRoot.Velocity = Vector3.zero
+                    local lockPos = savedPos * CFrame.new(0, 17, 0)
+                    tRoot.CFrame = lockPos
+                    tRoot.Velocity = Vector3.zero
+                    tHum.PlatformStand = true
+                    tHum.Sit = true
+                    pcall(function()
+                        GE.SetNetworkOwner:FireServer(tRoot, lockPos)
+                        GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
+                        GE.DestroyGrabLine:FireServer(tRoot)
+                    end)
+                end
+                RunService.Heartbeat:Wait()
+            else
+                isDragging = false
+                grabTimer = nil
+                if myRoot then
+                    myRoot.CFrame = savedPos
+                    myRoot.Velocity = Vector3.zero
+                end
+                task.wait(0.2)
+            end
+        end
+
+        if myRoot then
+            myRoot.CFrame = savedPos
+            myRoot.Velocity = Vector3.zero
+        end
+    end)
+end
+
+---------------------------------------
+-- // Toggle в Obsidian
+---------------------------------------
+mainTab:AddToggle({
+    Name = "Loop Kick",
+    Default = false,
+    Save = false,
+    Flag = "LoopKickToggle",
+    Callback = function(value)
+        LoopKickToggleCallback(value)
+    end
 })
 
 	TargetGroup:AddToggle("LoopKillToggle", {
