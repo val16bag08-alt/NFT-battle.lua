@@ -1002,13 +1002,13 @@ TargetGroup:AddToggle("LoopKickToggle", {
 				if tRoot and tHum and tHum.Health > 0 and myRoot then
 					local dist = (myRoot.Position - tRoot.Position).Magnitude
 					
-					if dist > 8 then
+					if dist > 25 then
 						local savedPos = myRoot.CFrame
 						myRoot.CFrame = tRoot.CFrame * CFrame.new(0, 0, 2)
 						myRoot.Velocity = Vector3.zero
 						
 						local t = tick()
-						while tick() - t < 0.35 do
+						while tick() - t < 0.1 do
 							if not kickLoopEnabled then break end
 							
 							if tRoot then
