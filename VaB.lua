@@ -1008,7 +1008,7 @@ TargetGroup:AddToggle("LoopKickToggle", {
 						myRoot.Velocity = Vector3.zero
 						
 						local t = tick()
-						while tick() - t < 0.1 do
+						while tick() - t < 0.35 do
 							if not kickLoopEnabled then break end
 							
 							if tRoot then
@@ -1022,6 +1022,7 @@ TargetGroup:AddToggle("LoopKickToggle", {
 								
 								pcall(function()
 									GE.SetNetworkOwner:FireServer(tRoot, myRoot.CFrame)
+												task.wait(0.1)
 								end)
 							end
 							RunService.Heartbeat:Wait()
