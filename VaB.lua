@@ -110,7 +110,7 @@
 	Library.ForceCheckbox = false
 
 	local Window = Library:CreateWindow({
-		Title = "VaB",
+		Title = "☣️ VaB",
 		Footer = "Made by VaBlox",
 		NotifySide = "Right",
 		ShowCustomCursor = true,
