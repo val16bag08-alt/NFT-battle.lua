@@ -110,8 +110,8 @@
 	Library.ForceCheckbox = false
 
 	local Window = Library:CreateWindow({
-		Title = "РєРѕС‚Р°РєР±Р°СЃ РєР»РёРµРЅС‚",
-		Footer = "РєРѕС‚Р°РєР±Р°СЃ РєР»РёРµРЅС‚ РїРµРЅР° by demureflord and wusha",
+		Title = "VaB",
+		Footer = "Made by VaBlox",
 		NotifySide = "Right",
 		ShowCustomCursor = true,
 	})
@@ -147,7 +147,7 @@
 	end
 
 	local function sendHubLoadedMessage()
-		local message = "РєРѕС‚Р°РєР±Р°СЃ РєР»РёРµРЅС‚ Р°РЅР±СЂРµР№РЅ loaded. (beta release)"
+		local message = "👑 Owner Version | [VaB] loaded. "
 		local sent = false
 		pcall(function()
 			local chatEvents = ReplicatedStorage:FindFirstChild("DefaultChatSystemChatEvents")
@@ -322,7 +322,7 @@
 	local autoStruggleConn = nil
 
 	DefenseGroup:AddToggle("AntiGrabObsidian", {
-		Text = "Anti Grab (struggle + anchor)",
+		Text = "Anti Grab",
 		Default = false,
 		Callback = function(Value)
 			local RunService = game:GetService("RunService")
@@ -408,7 +408,7 @@
 		end)
 	end
 	DefenseGroup:AddToggle("AntiBlobmanToggle", {
-	Text="anti blobman", 
+	Text="Anti Blobman", 
 	Default=false,
 	Callback=function(on)
 		if on then antiBlob1F() else antiBlob1T=false end
@@ -434,7 +434,7 @@
 		end)
 	end
 	DefenseGroup:AddToggle("AntiExplosionToggle", {
-	Text="anti explosion", 
+	Text="Anti Explosion", 
 	Default=false,
 	Callback=function(on)
 		if on then antiExplodeF() else antiExplodeT=false end
@@ -477,7 +477,7 @@
 		end)
 	end
 	DefenseGroup:AddToggle("AntiBurnToggle", {
-		Text = "anti burn",
+		Text = "Anti Burn",
 		Default = false,
 		Callback = function(on)
 			if on then hookBurn(Player.Character) elseif hookBurnConn then hookBurnConn:Disconnect() end
@@ -488,7 +488,7 @@
 	local VOID_THRESHOLD = -50
 	local SAFE_HEIGHT = 100
 	DefenseGroup:AddToggle("AntiVoidToggle", {
-	Text = "anti void",
+	Text = "Anti Void",
 	Default = false,
 	Callback = function(on)
 		if on then
@@ -512,7 +512,7 @@
 
 	local antiStickyT = false
 	DefenseGroup:AddToggle("AntiStickyToggle", {
-	Text = "anti sticky",
+	Text = "Anti Sticky",
 	Default = false,
 	Callback = function(Value)
 		antiStickyT = Value
@@ -531,7 +531,7 @@
 		if originalExtend then extendGrabLineCopy = originalExtend:Clone() end
 	end
 	DefenseGroup:AddToggle("AntiLagToggle", {
-	Text = "anti lag",
+	Text = "Anti Lag",
 	Default = false,
 	Callback = function(Value)
 		if Value then
@@ -573,7 +573,7 @@
 	local autoGucciActive = false 
 
 	DefenseExtra:AddToggle("AutoGucciToggle", {
-		Text = "auto anti gucci",
+		Text = "Anti Gucci",
 		Default = false,
 		Callback = function(Value)
 			autoGucciActive = Value
@@ -695,7 +695,7 @@
 
 	local tpActive = false
 	DefenseExtra:AddToggle("ShurikenAntiKick", {
-		Text = "antikick (tysm Tapalka)",
+		Text = "Anti Kick",
 		Default = false,
 		Callback = function(Value)
 			_G.ShurikenAntiKick = Value
@@ -886,7 +886,7 @@
 	})
 
 	DefenseExtra:AddToggle("AntiLoopKillRandom", {
-		Text = "antiloop kill (random tp)",
+		Text = "Anti Loop Kill",
 		Default = false,
 		Callback = function(Value)
 			tpActive = Value
@@ -966,7 +966,7 @@
 	})
 
 TargetGroup:AddToggle("LoopKickToggle", {
-	Text = "kick (spam grab)",
+	Text = "Kick (spam grab)",
 	Default = false,
 	Callback = function(on)
 		kickLoopEnabled = on
@@ -1064,7 +1064,7 @@ TargetGroup:AddToggle("LoopKickToggle", {
 })
 
 	TargetGroup:AddToggle("LoopKillToggle", {
-		Text = "loop kill (changestate)",
+		Text = "Loop kill (changestate)",
 		Default = false,
 		Callback = function(on)
 			loopKillEnabled = on
@@ -1141,7 +1141,7 @@ TargetGroup:AddToggle("LoopKickToggle", {
 	})
 
 TargetGroup:AddToggle("LoopKickToggle", {
-    Text = "loop kick (wusha method)",
+    Text = "Loop Kick (grab + blob)",
     Default = false,
     Callback = function(on)
         kickLoopEnabled = on
@@ -1269,7 +1269,7 @@ TargetGroup:AddToggle("LoopKickToggle", {
 
 	local loopKickDualActive = false
 	TargetGroup:AddToggle("DualHandLoopKick", {
-		Text = "loop kick (INIT + PING)",
+		Text = "Loop Kick",
 		Default = false,
 		Callback = function(on)
 			loopKickDualActive = on
@@ -1362,7 +1362,7 @@ TargetGroup:AddToggle("LoopKickToggle", {
 	local originalPos = nil
 
 	TargetGroup:AddToggle("PlayerFlingBtn", {
-		Text = "fling (no blobman)",
+		Text = "Fling",
 		Default = false,
 		Callback = function(on)
 			playerFlingActive = on
@@ -1537,7 +1537,7 @@ TargetGroup:AddToggle("LoopKickToggle", {
 	local bgInstance = nil
 
 	BlobGroup:AddToggle("BlobFlyToggle", {
-		Text = "Blobman Fly (Master Switch)",
+		Text = "Blobman Fly",
 		Default = false,
 		Callback = function(Value)
 			blobMasterSwitch = Value
@@ -1660,7 +1660,7 @@ TargetGroup:AddToggle("LoopKickToggle", {
 	local DestroyTargetGucciActive = false
 
 	TargetGroup:AddToggle("DestroyTargetGucci", {
-		Text = "destroy target's gucci (sit)",
+		Text = "Destroy Gucci (sit)",
 		Default = false,
 		Callback = function(Value)
 			DestroyTargetGucciActive = Value
@@ -1889,7 +1889,7 @@ TargetGroup:AddButton({
 	})
 
 	TargetGroup:AddToggle("AntiAntiInputLag", {
-		Text = "anti anti input lag",
+		Text = "Anti Anti Input Lag",
 		Default = false,
 		Callback = function(on)
 			antiAntiLagEnabled = on
@@ -2206,7 +2206,7 @@ TargetGroup:AddButton({
 	workspace.DescendantAdded:Connect(function(obj) if espEnabled and IsTarget(obj) then AddBoxESP(obj) end end)
 
 	PlayerESP:AddToggle("BoxESPWhite", {
-		Text = "pcld view",
+		Text = "PCLD View",
 		Default = false,
 		Callback = function(Value)
 			espEnabled = Value
@@ -2215,7 +2215,7 @@ TargetGroup:AddButton({
 	})
 
 	PlayerESP:AddToggle("NicknameESP", {
-		Text = "nickname esp",
+		Text = "Nickname Esp",
 		Default = false,
 		Callback = function(Value)
 			local function createESP(plr)
