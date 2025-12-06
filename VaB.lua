@@ -965,103 +965,46 @@
 		end
 	})
 
-TargetGroup:AddToggle("LoopKickToggle", {
-	Text = "Kick (spam grab)",
-	Default = false,
-	Callback = function(on)
-		kickLoopEnabled = on
-		local target = selectedKickPlayer
-		if on and not target then 
-			if Toggles.LoopKickToggle then Toggles.LoopKickToggle:SetValue(false) end
-			return 
-		end
-		if not on then
-			kickLoopEnabled = false
-			return
-		end
+local RunService = game:GetService("RunService")
+local Player = game.Players.LocalPlayer
+local Mouse = Player:GetMouse()
 
-		task.spawn(function()
-			local RS = game:GetService("ReplicatedStorage")
-			local RunService = game:GetService("RunService")
-			local GE = RS:WaitForChild("GrabEvents")
-			
-			while kickLoopEnabled do
-				if not target or not target.Parent then
-					kickLoopEnabled = false
-					if Toggles.LoopKickToggle then Toggles.LoopKickToggle:SetValue(false) end
-					break
-				end
+local GE = game.ReplicatedStorage:WaitForChild("GrabEvents") -- пример
+local lockPos = nil -- если у тебя это используется
+local tRoot = nil -- корень цели, который фиксируем
 
-				local tChar = target.Character
-				local tRoot = tChar and (tChar:FindFirstChild("HumanoidRootPart") or tChar:FindFirstChild("PlayerCharacterLocationDetector"))
-				local tHum = tChar and tChar:FindFirstChild("Humanoid")
-				
-				local myChar = Player.Character
-				local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
+task.spawn(function()
+	while true do
+		-- Делаем Raycast от камеры в точку прицела
+		local cam = workspace.CurrentCamera
+		local origin = cam.CFrame.Position
+		local direction = cam.CFrame.LookVector * 5000
 
-				if tRoot and tHum and tHum.Health > 0 and myRoot then
-					local dist = (myRoot.Position - tRoot.Position).Magnitude
-					
-					if dist > 25 then
-						local savedPos = myRoot.CFrame
-						myRoot.CFrame = tRoot.CFrame * CFrame.new(0, 0, 2)
-						myRoot.Velocity = Vector3.zero
-						
-						local t = tick()
-						while tick() - t < 0.35 do
-							if not kickLoopEnabled then break end
-							
-							if tRoot then
-								myRoot.CFrame = tRoot.CFrame * CFrame.new(0, 0, 2)
-								myRoot.Velocity = Vector3.zero
-								
-								tRoot.AssemblyLinearVelocity = Vector3.zero
-								tRoot.AssemblyAngularVelocity = Vector3.zero
-								tRoot.Velocity = Vector3.zero
-								tRoot.RotVelocity = Vector3.zero
-								
-								pcall(function()
-									GE.SetNetworkOwner:FireServer(tRoot, myRoot.CFrame)
-								end)
-							end
-							RunService.Heartbeat:Wait(0.1)
-						end
-						
-						if myRoot then
-							myRoot.CFrame = savedPos
-							myRoot.Velocity = Vector3.zero
-						end
-						
-						if tRoot then
-							tRoot.CFrame = savedPos * CFrame.new(0, 15, 0)
-							tRoot.AssemblyLinearVelocity = Vector3.zero
-						end
-					
-					else
-						local lockPos = myRoot.CFrame * CFrame.new(0, 15, 0)
-						
-						tRoot.CFrame = lockPos
-						tRoot.AssemblyLinearVelocity = Vector3.zero
-						tRoot.AssemblyAngularVelocity = Vector3.zero
-						tRoot.Velocity = Vector3.zero
-						tRoot.RotVelocity = Vector3.zero
-						
-						tHum.PlatformStand = true
-						tHum.Sit = true
-						
-						pcall(function()
-							GE.SetNetworkOwner:FireServer(tRoot, lockPos)
-							GE.DestroyGrabLine:FireServer(tRoot)
-							GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
-							GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
-						end)
-					end
-				end
-				RunService.Heartbeat:Wait()
+		local params = RaycastParams.new()
+		params.FilterType = Enum.RaycastFilterType.Blacklist
+		params.FilterDescendantsInstances = {Player.Character}
+
+		local result = workspace:Raycast(origin, direction, params)
+
+		if result then
+			local hitPos = result.Position -- вот нужная точка
+
+			-- если цель захвачена и есть tRoot
+			if tRoot then
+				pcall(function()
+					GE.SetNetworkOwner:FireServer(tRoot, lockPos)
+					GE.DestroyGrabLine:FireServer(tRoot)
+
+					-- Линия теперь смотрит на hitPos вместо tRoot.Position
+					GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, hitPos, false)
+					GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, hitPos, false)
+				end)
 			end
-		end)
+		end
+
+		RunService.Heartbeat:Wait()
 	end
-})
+end)
 
 	TargetGroup:AddToggle("LoopKillToggle", {
 		Text = "Loop kill",
