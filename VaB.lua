@@ -1839,7 +1839,7 @@ TargetGroup:AddButton({
 	local antiAntiKickActive = false
 
 	TargetGroup:AddToggle("DestroyAntiKickToggle", {
-		Text = "anti antikick (tysm Tapalka)",
+		Text = "Grab Anti Kick",
 		Default = false,
 		Callback = function(Value)
 			antiAntiKickActive = Value
