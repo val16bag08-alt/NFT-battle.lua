@@ -1008,7 +1008,7 @@ TargetGroup:AddToggle("LoopKickToggle", {
 						myRoot.Velocity = Vector3.zero
 						
 						local t = tick()
-						while tick() - t < 0.20 do
+						while tick() - t < 0.60 do
 							if not kickLoopEnabled then break end
 							
 							if tRoot then
