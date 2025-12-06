@@ -1008,7 +1008,7 @@ TargetGroup:AddToggle("LoopKickToggle", {
 						myRoot.Velocity = Vector3.zero
 						
 						local t = tick()
-						while tick() - t < 0.45 do
+						while tick() - t < 0.20 do
 							if not kickLoopEnabled then break end
 							
 							if tRoot then
@@ -1064,7 +1064,7 @@ TargetGroup:AddToggle("LoopKickToggle", {
 })
 
 	TargetGroup:AddToggle("LoopKillToggle", {
-		Text = "Loop kill (changestate)",
+		Text = "Loop kill",
 		Default = false,
 		Callback = function(on)
 			loopKillEnabled = on
