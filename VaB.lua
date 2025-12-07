@@ -254,18 +254,21 @@
 		if blobFolder and blobFolder:FindFirstChild("CreatureBlobman") then blobFolder.CreatureBlobman:Destroy() end
 	end
 
+	local antiGucciConnectionTrain
+	local safePositionTrain
+	local restoreFramesTrain = 0
 	local function startAntiGucciTrain()
 		local character = Player.Character or Player.CharacterAdded:Wait()
 		local humanoid = character:WaitForChild("Humanoid")
 		local rootPart = character:WaitForChild("HumanoidRootPart")
-		safePosition = rootPart.Position
+		safePositionTrain = rootPart.Position
 		local folder = workspace.Map.AlwaysHereTweenedObjects
 		local train = folder and folder:FindFirstChild("Train")
 		local seat = train and train:FindFirstChild("VehicleSeat")
 		if seat and seat:IsA("VehicleSeat") then rootPart.CFrame = seat.CFrame + Vector3.new(0, 2, 0) seat:Sit(humanoid) end
 		humanoid:GetPropertyChangedSignal("Jump"):Connect(function() if humanoid.Jump and humanoid.Sit then restoreFrames = 15 safePosition = rootPart.Position end end)
-		if antiGucciConnection then antiGucciConnection:Disconnect() end
-		antiGucciConnection = R.Heartbeat:Connect(function()
+		if antiGucciConnectionTrain then antiGucciConnectionTrain:Disconnect() end
+		antiGucciConnectionTrain = R.Heartbeat:Connect(function()
 			if not rootPart or not humanoid then return end
 			ReplicatedStorage.CharacterEvents.RagdollRemote:FireServer(rootPart, 0)
 			if restoreFrames > 0 then rootPart.CFrame = CFrame.new(safePosition) restoreFrames = restoreFrames - 1 end
@@ -273,7 +276,7 @@
 		task.spawn(function() while humanoid.Sit do task.wait(1) end task.wait(0.5) rootPart.CFrame = CFrame.new(safePosition) end)
 	end
 	local function stopAntiGucciTrain()
-		if antiGucciConnection then antiGucciConnection:Disconnect() antiGucciConnection = nil end
+		if antiGucciConnectionTrain then antiGucciConnectionTrain:Disconnect() antiGucciConnectionTrain = nil end
 		local trainFolder = workspace.Map.AlwaysHereTweenedObjects
 		if trainFolder and trainFolder:FindFirstChild("Train") then ResetPlayer(game.Players.LocalPlayer) end
 end
@@ -639,20 +642,20 @@ end
 		end
 	})
 
-	local autoGucciActive =  false
+	local autoGucciActiveTrain =  false
 
 	DefenseExtra:AddToggle("AutoGucciToggle", {
 		Text = "Anti Gucci (Train)",
 		Default = false,
 		Callback = function(Value)
-			autoGucciActive = Value
+			autoGucciActiveTrain = Value
 
 			if Value then
 				startAntiGucciTrain()
 				notify("system", "Gucci active (monitoring)", 3)
 
 				task.spawn(function()
-					while autoGucciActive do
+					while autoGucciActiveTrain do
 						local trainFolder = workspace.Map.AlwaysHereTweenedObjects
 						local trainExists = trainFolder and trainFolder:FindFirstChild("Train")
 
@@ -665,9 +668,9 @@ end
 								task.wait(0.2)
 								retries = retries + 1
 								trainFolder = workspace.Map.AlwaysHereTweenedObjects
-							until (trainFolder and trainFolder:FindFirstChild("Train")) or retries > 25 or not autoGucciActive
+							until (trainFolder and trainFolder:FindFirstChild("Train")) or retries > 25 or not autoGucciActiveTrain
 
-							if autoGucciActive and trainFolder and trainFolder:FindFirstChild("Train") then
+							if autoGucciActiveTrain and trainFolder and trainFolder:FindFirstChild("Train") then
 								startAntiGucciTrain()
 								notify("System", "Train restored.", 3)
 							end
@@ -676,7 +679,7 @@ end
 					end
 				end)
 			else
-				autoGucciActive = false
+				autoGucciActiveTrain = false
 				stopAntiGucciTrain()
 				notify("System", "Gucci disabled.", 3)
 			end
