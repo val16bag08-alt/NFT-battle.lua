@@ -262,11 +262,11 @@
 		local humanoid = character:WaitForChild("Humanoid")
 		local rootPart = character:WaitForChild("HumanoidRootPart")
 		safePositionTrain = rootPart.Position
-		local folder = workspace.Map:FindFirstChlind("AlwaysHereTweenedObjects")
+		local folder = workspace.Map.AlwaysHereTweenedObjects
 		local train = folder and folder:FindFirstChild("Train")
-		local seat = train and train.Object:FindFirstChlind("ObjectModel")
+		local seat = train and train.Object.ObjectModel
 		if seat and seat:IsA("Seat") then rootPart.CFrame = seat.CFrame + Vector3.new(0, 2, 0) seat:Sit(humanoid) end
-		humanoid:GetPropertyChangedSignal("Jump"):Connect(function() if humanoid.Jump and humanoid.Sit then restoreFrames = 15 safePosition = rootPart.Position end end)
+		humanoid:GetPropertyChangedSignal("Jump"):Connect(function() if humanoid.Jump and humanoid.Sit then restoreFramesTrain = 15 safePositionTrain = rootPart.Position end end)
 		if antiGucciConnectionTrain then antiGucciConnectionTrain:Disconnect() end
 		antiGucciConnectionTrain = R.Heartbeat:Connect(function()
 			if not rootPart or not humanoid then return end
@@ -277,7 +277,7 @@
 	end
 	local function stopAntiGucciTrain()
 		if antiGucciConnectionTrain then antiGucciConnectionTrain:Disconnect() antiGucciConnectionTrain = nil end
-		local trainFolder = workspace.Map:FindFirstChlind("AlwaysHereTweenedObjects")
+		local trainFolder = workspace.Map.AlwaysHereTweenedObjects
 		if trainFolder and trainFolder:FindFirstChild("Train") then ResetPlayer(game.Players.LocalPlayer) end
 end
 
@@ -656,7 +656,7 @@ end
 
 				task.spawn(function()
 					while autoGucciActiveTrain do
-						local trainFolder = workspace.Map:FindFirstChlind("AlwaysHereTweenedObjects")
+						local trainFolder = workspace.Map.AlwaysHereTweenedObjects
 						local trainExists = trainFolder and trainFolder:FindFirstChild("Train")
 
 						if not trainExists then
@@ -667,7 +667,7 @@ end
 							repeat
 								task.wait(0.2)
 								retries = retries + 1
-								trainFolder = workspace.Map:FindFirstChlind("AlwaysHereTweenedObjects")
+								trainFolder = workspace.Map.AlwaysHereTweenedObjects
 							until (trainFolder and trainFolder:FindFirstChild("Train")) or retries > 25 or not autoGucciActiveTrain
 
 							if autoGucciActiveTrain and trainFolder and trainFolder:FindFirstChild("Train") then
