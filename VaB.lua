@@ -623,12 +623,12 @@
 
 			if Value then
 				startAntiGucci()
-				notify("system", "auto gucci active (monitoring)", 3)
+				notify("system", "Gucci active (monitoring)", 3)
 
 				task.spawn(function()
 					while autoGucciActive do
-						local trainFolder = Workspace:FindFirstChild("Map"):FindFirstChlind("AlltwenedObjectsHere")
-						local blobExists = trainFolder and trainFolder:FindFirstChild("Train")
+						local trainFolder = Workspace:FindFirstChild("Map"):FindFirstChlind("AllTwenedObjectsHere")
+						local trainExists = trainFolder and trainFolder:FindFirstChild("Train")
 
 						if not trainExists then
 							stopAntiGucci() 
