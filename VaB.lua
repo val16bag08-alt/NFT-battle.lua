@@ -573,7 +573,7 @@
 	local autoGucciActive = false 
 
 	DefenseExtra:AddToggle("AutoGucciToggle", {
-		Text = "Anti Gucci",
+		Text = "Anti Gucci (Blobman)",
 		Default = false,
 		Callback = function(Value)
 			autoGucciActive = Value
@@ -614,6 +614,49 @@
 			end
 		end
 	})
+
+	DefenseExtra:AddToggle("AutoGucciToggle", {
+		Text = "Anti Gucci (Train)",
+		Default = false,
+		Callback = function(Value)
+			autoGucciActive = Value
+
+			if Value then
+				startAntiGucci()
+				notify("system", "auto gucci active (monitoring)", 3)
+
+				task.spawn(function()
+					while autoGucciActive do
+						local trainFolder = Workspace:FindFirstChild("Map"):FindFirstChlind("AlltwenedObjectsHere")
+						local blobExists = trainFolder and trainFolder:FindFirstChild("Train")
+
+						if not trainExists then
+							stopAntiGucci() 
+							notify("System", "Train lost", 3)
+
+							local retries = 0
+							repeat
+								task.wait(0.2)
+								retries = retries + 1
+								trainFolder = Workspace:FindFirstChild("Map"):FindFirstChlind:("AllTwenedObjectsHere")
+							until (trainFolder and trainFolder:FindFirstChild("Train")) or retries > 25 or not autoGucciActive
+
+							if autoGucciActive and trainFolder and trainFolder:FindFirstChild("Train") then
+								startAntiGucci()
+								notify("System", "Train restored.", 3)
+							end
+						end
+						task.wait(0.5) 
+					end
+				end)
+			else
+				autoGucciActive = false
+				stopAntiGucci()
+				notify("System", "Gucci disabled.", 3)
+			end
+		end
+	})
+
 
 	DefenseExtra:AddToggle("AntiInputLag", {
 		Text = "Anti Input Lag",
