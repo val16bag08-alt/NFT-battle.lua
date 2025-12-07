@@ -264,8 +264,8 @@
 		safePositionTrain = rootPart.Position
 		local folder = workspace.Map.AlwaysHereTweenedObjects
 		local train = folder and folder:FindFirstChild("Train")
-		local seat = train and train:FindFirstChild("VehicleSeat")
-		if seat and seat:IsA("VehicleSeat") then rootPart.CFrame = seat.CFrame + Vector3.new(0, 2, 0) seat:Sit(humanoid) end
+		local seat = train and train.Object.ObjectModel
+		if seat and seat:IsA("Seat") then rootPart.CFrame = seat.CFrame + Vector3.new(0, 2, 0) seat:Sit(humanoid) end
 		humanoid:GetPropertyChangedSignal("Jump"):Connect(function() if humanoid.Jump and humanoid.Sit then restoreFrames = 15 safePosition = rootPart.Position end end)
 		if antiGucciConnectionTrain then antiGucciConnectionTrain:Disconnect() end
 		antiGucciConnectionTrain = R.Heartbeat:Connect(function()
