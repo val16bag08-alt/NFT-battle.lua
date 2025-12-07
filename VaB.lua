@@ -272,7 +272,7 @@
 		end)
 		task.spawn(function() while humanoid.Sit do task.wait(1) end task.wait(0.5) rootPart.CFrame = CFrame.new(safePosition) end)
 	end
-	local function stopAntiGucci()
+	local function stopAntiGucciTrain()
 		if antiGucciConnection then antiGucciConnection:Disconnect() antiGucciConnection = nil end
 		local trainFolder = workspace.Map.AlwaysHereTweenedObjects
 		if trainFolder and trainFolder:FindFirstChild("Train") then ResetPlayer(game.Players.LocalPlayer) end
@@ -594,7 +594,7 @@ end
 		end
 	})
 
-	local autoGucciActive = false 
+	local autoGucciActive =  false
 
 	DefenseExtra:AddToggle("AutoGucciToggle", {
 		Text = "Anti Gucci (Blobman)",
@@ -639,6 +639,8 @@ end
 		end
 	})
 
+	local autoGucciActive =  false
+
 	DefenseExtra:AddToggle("AutoGucciToggle", {
 		Text = "Anti Gucci (Train)",
 		Default = false,
@@ -646,7 +648,7 @@ end
 			autoGucciActive = Value
 
 			if Value then
-				startAntiGucci()
+				startAntiGucciTrain()
 				notify("system", "Gucci active (monitoring)", 3)
 
 				task.spawn(function()
@@ -655,7 +657,7 @@ end
 						local trainExists = trainFolder and trainFolder:FindFirstChild("Train")
 
 						if not trainExists then
-							stopAntiGucci() 
+							stopAntiGucciTrain() 
 							notify("System", "Train lost", 3)
 
 							local retries = 0
@@ -666,7 +668,7 @@ end
 							until (trainFolder and trainFolder:FindFirstChild("Train")) or retries > 25 or not autoGucciActive
 
 							if autoGucciActive and trainFolder and trainFolder:FindFirstChild("Train") then
-								startAntiGucci()
+								startAntiGucciTrain()
 								notify("System", "Train restored.", 3)
 							end
 						end
@@ -675,7 +677,7 @@ end
 				end)
 			else
 				autoGucciActive = false
-				stopAntiGucci()
+				stopAntiGucciTrain()
 				notify("System", "Gucci disabled.", 3)
 			end
 		end
