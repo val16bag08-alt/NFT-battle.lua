@@ -271,7 +271,7 @@
 		antiGucciConnectionTrain = R.Heartbeat:Connect(function()
 			if not rootPart or not humanoid then return end
 			ReplicatedStorage.CharacterEvents.RagdollRemote:FireServer(rootPart, 0)
-			if restoreFrames > 0 then rootPart.CFrame = CFrame.new(safePosition) restoreFrames = restoreFrames - 1 end
+			if restoreFramesTrain > 0 then rootPart.CFrame = CFrame.new(safePosition) restoreFramesTrain = restoreFramesTrain - 1 end
 		end)
 		task.spawn(function() while humanoid.Sit do task.wait(1) end task.wait(0.5) rootPart.CFrame = CFrame.new(safePosition) end)
 	end
