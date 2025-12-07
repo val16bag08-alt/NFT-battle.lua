@@ -627,7 +627,7 @@
 
 				task.spawn(function()
 					while autoGucciActive do
-						local trainFolder = Workspace:FindFirstChild("Map"):FindFirstChlind("AllTwenedObjectsHere")
+						local trainFolder = workspace.Map.AlwaysHereTweenedObjects
 						local trainExists = trainFolder and trainFolder:FindFirstChild("Train")
 
 						if not trainExists then
@@ -638,7 +638,7 @@
 							repeat
 								task.wait(0.2)
 								retries = retries + 1
-								trainFolder = Workspace:FindFirstChild("Map"):FindFirstChlind:("AllTwenedObjectsHere")
+								trainFolder = workspace.Map.AlwaysHereTweenedObjects
 							until (trainFolder and trainFolder:FindFirstChild("Train")) or retries > 25 or not autoGucciActive
 
 							if autoGucciActive and trainFolder and trainFolder:FindFirstChild("Train") then
