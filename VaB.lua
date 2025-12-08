@@ -3023,6 +3023,7 @@ TargetGroup:AddButton({
 
 BuildGroup:AddButton({
  	Text = "Delete Arms and Legs"
+	Func = function()
 		local Players = game:GetService("Players")
 		local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
