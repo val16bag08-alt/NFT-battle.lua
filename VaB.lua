@@ -123,7 +123,7 @@
 		Player = Window:AddTab("player", "user"),
 		Misc = Window:AddTab("misc", "box"),
 		Build = Window:AddTab("build", "box"),
-		["UI Settings"] = Window:AddTab("UI Settings", "settings"),
+		["UI Settings"] = Window:AddTab("UI Settings", "settings")
 	}
 
 	local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -3021,4 +3021,3 @@ TargetGroup:AddButton({
 			end)
 		end
 	})
-
