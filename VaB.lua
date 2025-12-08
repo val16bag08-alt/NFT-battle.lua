@@ -40,7 +40,7 @@
 		local TextButton = Instance.new("TextButton")
 		local Title = Instance.new("TextLabel")
 
-		KeyGui.Name = "KotakbasAuth"
+		KeyGui.Name = "VaBAuth"
 		KeyGui.Parent = CoreGui
 		KeyGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
@@ -122,7 +122,7 @@
 		Grab = Window:AddTab("grab", "hand"),
 		Player = Window:AddTab("player", "user"),
 		Misc = Window:AddTab("misc", "box"),
-		Build = Window:AddTab("build", "box")
+		Build = Window:AddTab("build", "box"),
 		["UI Settings"] = Window:AddTab("UI Settings", "settings"),
 	}
 
