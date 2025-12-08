@@ -3021,7 +3021,7 @@ TargetGroup:AddButton({
 		end
 	})
 
-
+local BuildGroup = Tabs.Build:AddLeftGroupbox("Builds")
 BuildGroup:AddButton({
  	Text = "Delete Arms and Legs"
 	Func = function()
