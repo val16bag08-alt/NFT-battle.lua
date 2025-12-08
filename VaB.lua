@@ -3020,6 +3020,3 @@ TargetGroup:AddButton({
 			end)
 		end
 	})
-BuildGroup:AddButton({
-	Text = "Delete Arms and Legs"
-})
