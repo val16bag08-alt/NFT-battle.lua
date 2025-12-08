@@ -2468,7 +2468,6 @@ TargetGroup:AddButton({
 	})
 
 	local MiscGroup = Tabs.Misc:AddLeftGroupbox("Miscellaneous")
-	local PlayerVGroup = Tabs.Misc:AddRightGroupbox("PlayerV")
 
 	local mouse = Player:GetMouse()
 	local tpToolConn
