@@ -3021,110 +3021,110 @@ TargetGroup:AddButton({
 		end
 	})
 
-	BuildGroup:AddButton({
- 	   Text = "Delete Arms and Legs"
-			local Players = game:GetService("Players")
-			local ReplicatedStorage = game:GetService("ReplicatedStorage")
+BuildGroup:AddButton({
+ 	Text = "Delete Arms and Legs"
+		local Players = game:GetService("Players")
+		local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-			local LocalPlayer = Players.LocalPlayer
-			local ragdoll = ReplicatedStorage:WaitForChild("CharacterEvents"):WaitForChild("RagdollRemote")
-			local toy_spawn = ReplicatedStorage:WaitForChild("MenuToys"):WaitForChild("SpawnToyRemoteFunction")
-			local toy_destroy = ReplicatedStorage:WaitForChild("MenuToys"):WaitForChild("DestroyToy")
-			local setNetworkOwner = ReplicatedStorage:WaitForChild("GrabEvents"):WaitForChild("SetNetworkOwner")
+		local LocalPlayer = Players.LocalPlayer
+		local ragdoll = ReplicatedStorage:WaitForChild("CharacterEvents"):WaitForChild("RagdollRemote")
+		local toy_spawn = ReplicatedStorage:WaitForChild("MenuToys"):WaitForChild("SpawnToyRemoteFunction")
+		local toy_destroy = ReplicatedStorage:WaitForChild("MenuToys"):WaitForChild("DestroyToy")
+		local setNetworkOwner = ReplicatedStorage:WaitForChild("GrabEvents"):WaitForChild("SetNetworkOwner")
 
-			local targetCharacter = nil
+		local targetCharacter = nil
 
-			local function getCharacterOwnerName(char)
-				local humanoid = char:FindFirstChildOfClass("Humanoid")
-				if humanoid and humanoid.DisplayName then
-					return humanoid.DisplayName
-				end
-				return char.Name
+		local function getCharacterOwnerName(char)
+			local humanoid = char:FindFirstChildOfClass("Humanoid")
+			if humanoid and humanoid.DisplayName then
+				return humanoid.DisplayName
 			end
+			return char.Name
+		end
 
-			local function processCharacter(char)
-				local hrp = char:FindFirstChild("HumanoidRootPart")
-				local head = char:FindFirstChild("Head")
-				if not (hrp and head) then return end
+		local function processCharacter(char)
+			local hrp = char:FindFirstChild("HumanoidRootPart")
+			local head = char:FindFirstChild("Head")
+			if not (hrp and head) then return end
 
-				local bellModel = nil
-				local toysFolderName = getCharacterOwnerName(char) .. "SpawnedInToys"
+			local bellModel = nil
+			local toysFolderName = getCharacterOwnerName(char) .. "SpawnedInToys"
 
-				for i = 1, 10 do
-					pcall(function()
-						ragdoll:FireServer(hrp, 1)
-					end)
-					task.wait(0.05)
-				end
-
-				local limbs = {
-					"Right Leg",
-					"Left Leg",
-					"Right Arm",
-					"Left Arm"
-				}
-
-				for _, limbName in ipairs(limbs) do
-					local limb = char:FindFirstChild(limbName)
-					if limb then
-						pcall(function()
-							limb.CFrame = CFrame.new(hrp.Position + Vector3.new(0, -60000, 0))
-						end)
-					end
-				end
-
-				local toysFolder = workspace:FindFirstChild(toysFolderName)
-				local conn
-				if toysFolder then
-					conn = toysFolder.ChildAdded:Connect(function(obj)
-						if obj:IsA("Model") and obj.Name == "BellBig" then
-							bellModel = obj
-							task.defer(function()
-								obj:PivotTo(hrp.CFrame)
-							end)
-							if conn then conn:Disconnect() end
-						end
-					end)
-				end
-
+			for i = 1, 10 do
 				pcall(function()
-					toy_spawn:InvokeServer("BellBig", head.CFrame, Vector3.new(0, 160.2, 0))
+					ragdoll:FireServer(hrp, 1)
 				end)
+				task.wait(0.05)
+			end
 
-				task.delay(0.4, function()
-					if bellModel then
-						pcall(function()
-							toy_destroy:FireServer(bellModel)
+			local limbs = {
+				"Right Leg",
+				"Left Leg",
+				"Right Arm",
+				"Left Arm"
+			}
+
+			for _, limbName in ipairs(limbs) do
+				local limb = char:FindFirstChild(limbName)
+				if limb then
+					pcall(function()
+						limb.CFrame = CFrame.new(hrp.Position + Vector3.new(0, -60000, 0))
+					end)
+				end
+			end
+
+			local toysFolder = workspace:FindFirstChild(toysFolderName)
+			local conn
+			if toysFolder then
+				conn = toysFolder.ChildAdded:Connect(function(obj)
+					if obj:IsA("Model") and obj.Name == "BellBig" then
+						bellModel = obj
+						task.defer(function()
+							obj:PivotTo(hrp.CFrame)
 						end)
+						if conn then conn:Disconnect() end
 					end
 				end)
 			end
 
-			local function tryProcess()
-				if targetCharacter and targetCharacter:IsDescendantOf(workspace) then
-					processCharacter(targetCharacter)
-				else
-					local char = LocalPlayer.Character
-					if char then
-						processCharacter(char)
-					end
+			pcall(function()
+				toy_spawn:InvokeServer("BellBig", head.CFrame, Vector3.new(0, 160.2, 0))
+			end)
+
+			task.delay(0.4, function()
+				if bellModel then
+					pcall(function()
+						toy_destroy:FireServer(bellModel)
+					end)
+				end
+			end)
+		end
+
+		local function tryProcess()
+			if targetCharacter and targetCharacter:IsDescendantOf(workspace) then
+				processCharacter(targetCharacter)
+			else
+				local char = LocalPlayer.Character
+				if char then
+					processCharacter(char)
 				end
 			end
+		end
 
-			setNetworkOwner.OnClientEvent:Connect(function(model)
-				if typeof(model) == "Instance" and model:IsA("Model") and model:FindFirstChild("HumanoidRootPart") then
-					targetCharacter = model
-					processCharacter(model)
-				end
-			end)
+		setNetworkOwner.OnClientEvent:Connect(function(model)
+			if typeof(model) == "Instance" and model:IsA("Model") and model:FindFirstChild("HumanoidRootPart") then
+				targetCharacter = model
+				processCharacter(model)
+			end
+		end)
 
-			LocalPlayer.CharacterAdded:Connect(function()
-				if not targetCharacter then
-					tryProcess()
-				end
-			end)
-
-			if LocalPlayer.Character and not targetCharacter then
+		LocalPlayer.CharacterAdded:Connect(function()
+			if not targetCharacter then
 				tryProcess()
 			end
-	})
+		end)
+
+		if LocalPlayer.Character and not targetCharacter then
+			tryProcess()
+		end
+})
