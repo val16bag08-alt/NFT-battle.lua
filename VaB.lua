@@ -3127,3 +3127,4 @@ end)
 if LocalPlayer.Character and not targetCharacter then
 	tryProcess()
 		end
+})
