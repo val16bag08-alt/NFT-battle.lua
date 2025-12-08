@@ -3130,4 +3130,4 @@ PlayerVGroup:AddButton({
 		if LocalPlayer.Character and not targetCharacter then
 			tryProcess()
 		end
-})
+		})
