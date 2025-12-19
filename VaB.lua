@@ -967,8 +967,8 @@ end
 		end
 	})
 
-	DefenseExtra:AddToggle("AntiLoopKillRandom", {
-		Text = "Anti Loop Kill",
+	DefenseExtra:AddToggle("LoopTP", {
+		Text = "Loop TP",
 		Default = false,
 		Callback = function(Value)
 			tpActive = Value
@@ -1048,7 +1048,7 @@ end
 	})
 
 TargetGroup:AddToggle("LoopKickToggle", {
-		Text = "kick (spam grab)",
+		Text = "Loop Kick (spam grab)",
 		Default = false,
 		Callback = function(Value)
 			kickLoopEnabled = Value
@@ -1072,7 +1072,6 @@ TargetGroup:AddToggle("LoopKickToggle", {
 				local PlotItems = workspace:WaitForChild("PlotItems")
 				local PlayersInPlots = PlotItems:WaitForChild("PlayersInPlots")
 				
-				-- Р–РґРµРј РїРµСЂСЃРѕРЅР°Р¶Р°, С‡С‚РѕР±С‹ РЅРµ РєСЂР°С€РЅСѓР»РѕСЃСЊ
 				if not plr.Character then plr.CharacterAdded:Wait() end
 				local myChar = plr.Character
 				local myRoot = myChar:WaitForChild("HumanoidRootPart", 5)
@@ -1083,13 +1082,11 @@ TargetGroup:AddToggle("LoopKickToggle", {
 					return 
 				end
 
-				-- Р¤РёРєСЃРёСЂСѓРµРј Р±Р°Р·Сѓ Р–Р•Р›Р•Р—РќРћ
 				local savedPos = myRoot.CFrame
 				local grabTimer = nil
 				local isDragging = false
 
 				while kickLoopEnabled do
-					-- РЎРРќРҐР РћРќРќРђРЇ РќРђРљРђР§РљРђ Р¤РР—РРљР (Р§РўРћР‘Р« РќР• РџРђР”РђР›Р)
 					setsimulationradius(1000, 1000)
 					if plr.MaximumSimulationRadius < 1000 then plr.MaximumSimulationRadius = 1000 end
 					plr.SimulationRadius = 1000
@@ -1127,7 +1124,6 @@ TargetGroup:AddToggle("LoopKickToggle", {
 						end
 
 						if not isDragging then
-							-- Р¤РђР—Рђ Р—РђРҐР’РђРўРђ
 							myRoot.CFrame = tRoot.CFrame * CFrame.new(0,0,2)
 							myRoot.Velocity = Vector3.zero
 							pcall(function()
@@ -1640,35 +1636,6 @@ TargetGroup:AddToggle("LoopKickToggle", {
 		end
 	end)
 
-	local blobMasterSwitch = false
-	local blobFlyActive = false
-	local blobFlySpeed = 100
-	local bvInstance = nil
-	local bgInstance = nil
-
-	BlobGroup:AddToggle("BlobFlyToggle", {
-		Text = "Blobman Fly",
-		Default = false,
-		Callback = function(Value)
-			blobMasterSwitch = Value
-			if not Value then
-				blobFlyActive = false
-				if bvInstance then bvInstance:Destroy() bvInstance = nil end
-				if bgInstance then bgInstance:Destroy() bgInstance = nil end
-			end
-		end
-	})
-
-	BlobGroup:AddSlider("BlobFlySpeedSlider", {
-		Text = "Fly Speed",
-		Default = 100,
-		Min = 10,
-		Max = 500,
-		Rounding = 0,
-		Callback = function(Value)
-			blobFlySpeed = Value
-		end
-	})
 
 	UserInputService.InputBegan:Connect(function(input, gameProcessed)
 		if not gameProcessed and input.KeyCode == Enum.KeyCode.R then
@@ -2088,7 +2055,7 @@ TargetGroup:AddButton({
 			notifyActive = on
 			
 			if on then
-				notify("Radar", "С‚СЂР°РєРёРЅРі С‚Р°СЂРіРµС‚РѕРІ. Р¶РґРµРј С‚Р°СЂРіРµС‚РѕРІ РєРѕС‚РѕСЂС‹Рµ Р·Р°С€Р»Рё РѕР±СЂР°С‚РЅРѕ...", 3)
+				notify("Radar", "С‚СЂР°РєРёРЅРі С‚Р°СЂРіРµС‚РѕРІ. Р¶РґРµРј С‚Р°СЂРіРµС‚РѕРІ РєРѕС‚РѕСЂС‹Рµ Р·Р°С€Р»Рё РѕР±СЂР°С‚ зашел...", 3)
 				
 				if notifyConnection then notifyConnection:Disconnect() end
 				
@@ -2235,7 +2202,7 @@ TargetGroup:AddButton({
 		Player.CameraMinZoomDistance = 0
 	end
 	PlayerView:AddToggle("ThirdPersonToggle", {
-		Text = "3rd Person View",
+		Text = "3rd Person View"
 		Default = false,
 		Callback = function(Value)
 			if Value then enableThirdPerson() else disableThirdPerson() end
@@ -2745,7 +2712,7 @@ TargetGroup:AddButton({
 			if not pos then return end
 			local closest = getClosestPlayer(pos)
 			Rayfield:Notify({
-				Title = "РєРѕС‚Р°РєР±Р°СЃ РєР»РёРµРЅС‚ РєРёРє РЅРѕС‚РёС„Р°Р№",
+				Title = "Pon‚ РєРёРє РЅРѕС‚РёС„Р°Р№",
 				Content = "РєРёРєРЅСѓР»СЃСЏ XD ("..closest..")",
 				Duration = 6.5,
 				Image = 4483362458
@@ -2758,7 +2725,7 @@ TargetGroup:AddButton({
 	local heartToy = nil
 
 	MiscGroup:AddToggle("HeartSparklerHigh", {
-		Text = "heart (grab sparkler)",
+		Text = "Heart",
 		Default = false,
 		Callback = function(Value)
 			heartHighRun = Value
