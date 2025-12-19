@@ -2202,7 +2202,7 @@ TargetGroup:AddButton({
 		Player.CameraMinZoomDistance = 0
 	end
 	PlayerView:AddToggle("ThirdPersonToggle", {
-		Text = "3rd person view",
+		Text = "3rd Person View",
 		Default = false,
 		Callback = function(Value)
 			if Value then enableThirdPerson() else disableThirdPerson() end
@@ -2283,7 +2283,7 @@ TargetGroup:AddButton({
 	workspace.DescendantAdded:Connect(function(obj) if espEnabled and IsTarget(obj) then AddBoxESP(obj) end end)
 
 	PlayerESP:AddToggle("BoxESPWhite", {
-		Text = "pcld view",
+		Text = "PCLD View",
 		Default = false,
 		Callback = function(Value)
 			espEnabled = Value
@@ -2292,7 +2292,7 @@ TargetGroup:AddButton({
 	})
 
 	PlayerESP:AddToggle("NicknameESP", {
-		Text = "nickname esp",
+		Text = "Nickname Esp",
 		Default = false,
 		Callback = function(Value)
 			local function createESP(plr)
@@ -2327,65 +2327,6 @@ TargetGroup:AddButton({
 						if hrp:FindFirstChild("NameESP") then hrp.NameESP:Destroy() end
 					end
 				end
-			end
-		end
-	})
-
-	PlayerEnv:AddButton({
-		Text = "vintage shaders",
-		Func = function()
-			local Lighting = game:GetService("Lighting")
-			if Lighting:FindFirstChild("VintageColorCorrection") then return end
-			for _, effect in pairs(Lighting:GetChildren()) do if effect:IsA("PostEffect") then effect:Destroy() end end
-			local cc = Instance.new("ColorCorrectionEffect", Lighting) cc.Name = "VintageColorCorrection" cc.Saturation = -0.3 cc.TintColor = Color3.fromRGB(210, 180, 140) cc.Contrast = 0.1 cc.Brightness = -0.05
-			local blur = Instance.new("BlurEffect", Lighting) blur.Name = "VintageBlur" blur.Size = 4
-			local bloom = Instance.new("BloomEffect", Lighting) bloom.Name = "VintageBloom" bloom.Intensity = 0.25 bloom.Threshold = 0.7 bloom.Size = 30
-			Lighting.FogStart = 0 Lighting.FogEnd = 400 Lighting.FogColor = Color3.fromRGB(200, 180, 150)
-		end
-	})
-
-	PlayerEnv:AddButton({
-		Text = "shaders",
-		Func = function()
-			local Lighting = game:GetService("Lighting")
-			for i = 1, 3 do
-				Lighting.TimeOfDay = "16:00:00" Lighting.Brightness = 2 Lighting.Ambient = Color3.fromRGB(200, 200, 220) Lighting.OutdoorAmbient = Color3.fromRGB(150, 150, 180) Lighting.FogColor = Color3.fromRGB(180, 180, 200) Lighting.FogStart = 100 Lighting.FogEnd = 800
-				local existingSky = Lighting:FindFirstChild("ShaderSky") if existingSky then existingSky:Destroy() end
-				local sky = Instance.new("Sky", Lighting) sky.Name = "ShaderSky" sky.SkyboxBk = "rbxassetid://13783864188" sky.SkyboxDn = "rbxassetid://13783864188" sky.SkyboxFt = "rbxassetid://13783864188" sky.SkyboxLf = "rbxassetid://13783864188" sky.SkyboxRt = "rbxassetid://13783864188" sky.SkyboxUp = "rbxassetid://13783864188"
-				local existingCC = Lighting:FindFirstChild("ShaderColor") if existingCC then existingCC:Destroy() end
-				local cc = Instance.new("ColorCorrectionEffect", Lighting) cc.Name = "ShaderColor" cc.TintColor = Color3.fromRGB(220, 220, 255) cc.Contrast = 0.1 cc.Saturation = 0.05
-				local existingBloom = Lighting:FindFirstChild("ShaderBloom") if existingBloom then existingBloom:Destroy() end
-				local bloom = Instance.new("BloomEffect", Lighting) bloom.Name = "ShaderBloom" bloom.Intensity = 0.2 bloom.Size = 24
-				local existingSunRays = Lighting:FindFirstChild("ShaderSunRays") if existingSunRays then existingSunRays:Destroy() end
-				local sunRays = Instance.new("SunRaysEffect", Lighting) sunRays.Name = "ShaderSunRays" sunRays.Intensity = 0.1
-			end
-		end
-	})
-
-	PlayerEnv:AddButton({
-		Text = "delete shaders",
-		Func = function()
-			local Lighting = game:GetService("Lighting")
-			for _, effect in pairs(Lighting:GetChildren()) do if effect:IsA("PostEffect") or effect:IsA("Sky") then effect:Destroy() end end
-			Lighting.FogStart = 0 Lighting.FogEnd = 100000 Lighting.FogColor = Color3.fromRGB(255, 255, 255)
-		end
-	})
-
-	PlayerEnv:AddToggle("LiteShaders", {
-		Text = "lite shaders",
-		Default = false,
-		Callback = function(Value)
-			local Lighting = game:GetService("Lighting")
-			if Value then
-				Lighting.ClockTime = 17.5 Lighting.Brightness = 2 Lighting.ExposureCompensation = 0.15 Lighting.EnvironmentDiffuseScale = 1.1 Lighting.EnvironmentSpecularScale = 1.05 Lighting.ShadowSoftness = 0.32 Lighting.GlobalShadows = true
-				Lighting.Ambient = Color3.fromRGB(90,100,120) Lighting.OutdoorAmbient = Color3.fromRGB(130,140,180) Lighting.ColorShift_Top = Color3.fromRGB(120,150,255) Lighting.ColorShift_Bottom = Color3.fromRGB(100,130,220)
-				for _,v in ipairs(Workspace.Terrain:GetChildren()) do if v:IsA("Clouds") then v:Destroy() end end
-				local atm = Instance.new("Atmosphere", Lighting) atm.Density = 0.07 atm.Offset = 0.03 atm.Color = Color3.fromRGB(210,230,255) atm.Decay = Color3.fromRGB(125,150,175) atm.Glare = 0 atm.Haze = 0.45
-				local cc = Instance.new("ColorCorrectionEffect", Lighting) cc.TintColor = Color3.fromRGB(215,235,255) cc.Brightness = 0.03 cc.Contrast = 0.07 cc.Saturation = -0.02 cc.Enabled = true
-				local bloom = Instance.new("BloomEffect", Lighting) bloom.Intensity = 0.18 bloom.Size = 10 bloom.Threshold = 1.1 bloom.Enabled = true
-				local sky = Instance.new("Sky", Lighting) sky.SkyboxBk = "rbxassetid://8130030368" sky.SkyboxFt = "rbxassetid://8130023900" sky.SkyboxLf = "rbxassetid://8130026102" sky.SkyboxRt = "rbxassetid://8130019002" sky.SkyboxDn = "rbxassetid://8130017819" sky.SkyboxUp = "rbxassetid://8130015428" sky.SunAngularSize = 0 sky.MoonAngularSize = 11 sky.StarCount = 0
-			else
-				for _, effect in ipairs(Lighting:GetChildren()) do if effect:IsA("ColorCorrectionEffect") or effect:IsA("BloomEffect") or effect:IsA("Atmosphere") or effect:IsA("Sky") then effect:Destroy() end end
 			end
 		end
 	})
@@ -2598,7 +2539,7 @@ TargetGroup:AddButton({
 	})
 
 	MiscGroup:AddToggle("PacketLagToggle", {
-		Text = "Packet Lag (Ping Spike)",
+		Text = "Packet Lag",
 		Default = false,
 		Callback = function(Value)
 			_G.PacketLagActive = Value
@@ -2628,7 +2569,7 @@ TargetGroup:AddButton({
 	})
 
 	MiscGroup:AddToggle("AutoResetToggle", {
-		Text = "auto reset",
+		Text = "Auto Reset",
 		Default = false,
 		Callback = function(on)
 			autoResetEnabled = on
@@ -2655,7 +2596,7 @@ TargetGroup:AddButton({
 	})
 
 	MiscGroup:AddToggle("TriggerbotToggle", {
-		Text = "toggle triggerbot",
+		Text = "Trigger Bot",
 		Default = Triggerbot.Enabled,
 		Callback = function(value)
 			Triggerbot.Enabled = value
@@ -2687,17 +2628,17 @@ TargetGroup:AddButton({
 	SaveManager:SetLibrary(Library)
 	SaveManager:IgnoreThemeSettings()
 	SaveManager:SetIgnoreIndexes({ "MenuKeybind" })
-	ThemeManager:SetFolder("KotakbasHub")
-	SaveManager:SetFolder("KotakbasHub/Configs")
+	ThemeManager:SetFolder("VaBHub")
+	SaveManager:SetFolder("VaBHub/Configs")
 	SaveManager:BuildConfigSection(Tabs["UI Settings"])
 	ThemeManager:ApplyToTab(Tabs["UI Settings"])
 
 	PS.PlayerRemoving:Connect(function(player)
-		notify("котакбас вышел", (player and player.Name or "Unknown") .. " вышел", 5)
+		notify("Notify", (player and player.Name or "Unknown") .. " вышел", 5)
 	end)
 	PS.PlayerAdded:Connect(function(plr)
 		if plr:IsFriendsWith(Player.UserId) then
-			notify("друг зашел", plr.Name .. " зашел", 5)
+			notify("Notify друг", plr.Name .. " зашел", 5)
 		end
 	end)
 
@@ -2768,8 +2709,8 @@ TargetGroup:AddButton({
 			if not pos then return end
 			local closest = getClosestPlayer(pos)
 			Rayfield:Notify({
-				Title = "котакбас клиент кик нотифай",
-				Content = "кикнулся XD ("..closest..")",
+				Title = "Kick Notify",
+				Content = "Kicked ("..closest..")",
 				Duration = 6.5,
 				Image = 4483362458
 			})
@@ -2781,7 +2722,7 @@ TargetGroup:AddButton({
 	local heartToy = nil
 
 	MiscGroup:AddToggle("HeartSparklerHigh", {
-		Text = "heart (grab sparkler)",
+		Text = "Heart",
 		Default = false,
 		Callback = function(Value)
 			heartHighRun = Value
