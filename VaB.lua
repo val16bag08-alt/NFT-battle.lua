@@ -2928,7 +2928,7 @@ TargetGroup:AddButton({
 		end
 	})
 
-local BuildGroup = Tabs.Misc:AddLeftGroupbox("Funny")
+local BuildGroup = Tabs.Build:AddLeftGroupbox("Funny")
 
 BuildGroup:AddToggle("LShown", {
     Text = "Show L",
