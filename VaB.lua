@@ -1048,7 +1048,7 @@ end
 	})
 
 	TargetGroup:AddToggle("LoopKickToggle", {
-	    Text = "kick (spam grab)",
+	    Text = "Kick (spam grab)",
 	    Default = false,
 	    Callback = function(on)
 	        kickLoopEnabled = on
@@ -1124,7 +1124,7 @@ end
 	                        tRoot.RotVelocity = Vector3.zero
 	                        
 	                        tHum.PlatformStand = true
-	                        tHum.Sit = true
+	                        tHum.Sit = false
 	                        
 	                        pcall(function()
 	                            GE.SetNetworkOwner:FireServer(tRoot, lockPos)
