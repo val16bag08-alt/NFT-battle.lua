@@ -2929,62 +2929,78 @@ TargetGroup:AddButton({
 	})
 
 
-	local BuildGroup = Tabs.Build:AddLeftGroupbox("Funny")
-	
-	BuildGroup:AddToggle("LShown", {
-	    Text = "Show L",
-	    Default = false,
-	    Callback = function(Value)
-	
-	        local Players = game:GetService("Players")
-	        local RunService = game:GetService("RunService")
-	
-	        local player = Players.LocalPlayer
-	        local char = player.Character or player.CharacterAdded:Wait()
-	        local torso = char:WaitForChild("Torso")
-	
-	        local main = workspace.ValeraStar_2008SpawnedInToys.TetracubeJ.Main
-	
-	        for _, v in ipairs(main.Parent:GetDescendants()) do
-	            if v:IsA("BasePart") then
-	                v.CanCollide = false
-	                v.CanTouch = false
-	            end
-	        end
-	
-	        local bp = main:FindFirstChild("L_BP") or Instance.new("BodyPosition")
-	        bp.Name = "L_BP"
-	        bp.Parent = main
-	        bp.P = 6000
-	        bp.D = 150
-	
-	        local bg = main:FindFirstChild("L_BG") or Instance.new("BodyGyro")
-	        bg.Name = "L_BG"
-	        bg.Parent = main
-	        bg.P = 5000
-	        bg.D = 200
-	
-	        if Value then
-	            bp.MaxForce = Vector3.new(1e6, 1e6, 1e6)
-	            bg.MaxTorque = Vector3.new(1e6, 1e6, 1e6)
-	        else
-	            bp.MaxForce = Vector3.zero
-	            bg.MaxTorque = Vector3.zero
-	            return
-	        end
-	
-	        local t = 0
-	        RunService.RenderStepped:Connect(function(dt)
-	            if not Value then return end
-	            if not bp.Parent or not bg.Parent then return end
-	
-	            t += dt
-	            local cf = torso.CFrame
-	            local offset = math.sin(t * 30) * 15
-	
-	            bp.Position = torso.Position + cf.LookVector * (2 + offset)
-	            bg.CFrame = cf * CFrame.Angles(0, math.rad(180), 0)
-	        end)
-	
-	    end
-	})
+if Tabs.Build then
+    local BuildGroup = Tabs.Build:AddLeftGroupbox("Funny")
+    
+    local l_Connection = nil
+    
+    BuildGroup:AddToggle("LShown", {
+        Text = "Show L",
+        Default = false,
+        Callback = function(Value)
+            local Players = game:GetService("Players")
+            local RunService = game:GetService("RunService")
+            local player = Players.LocalPlayer
+            local char = player.Character or player.CharacterAdded:Wait()
+            local torso = char:FindFirstChild("Torso") or char:FindFirstChild("HumanoidRootPart")
+            
+            if not torso then return end
+    
+            local folderName = player.Name .. "SpawnedInToys"
+            local folder = workspace:FindFirstChild(folderName)
+            local toy = folder and folder:FindFirstChild("TetracubeJ")
+            local main = toy and toy:FindFirstChild("Main")
+    
+            if not main then
+                return 
+            end
+    
+            for _, v in ipairs(main.Parent:GetDescendants()) do
+                if v:IsA("BasePart") then
+                    v.CanCollide = false
+                    v.CanTouch = false
+                end
+            end
+    
+            local bp = main:FindFirstChild("L_BP") or Instance.new("BodyPosition")
+            bp.Name = "L_BP"
+            bp.Parent = main
+            bp.P = 6000
+            bp.D = 150
+    
+            local bg = main:FindFirstChild("L_BG") or Instance.new("BodyGyro")
+            bg.Name = "L_BG"
+            bg.Parent = main
+            bg.P = 5000
+            bg.D = 200
+    
+            if l_Connection then 
+                l_Connection:Disconnect() 
+                l_Connection = nil 
+            end
+    
+            if Value then
+                bp.MaxForce = Vector3.new(1e6, 1e6, 1e6)
+                bg.MaxTorque = Vector3.new(1e6, 1e6, 1e6)
+                
+                local t = 0
+                l_Connection = RunService.RenderStepped:Connect(function(dt)
+                    if not main.Parent then
+                        if l_Connection then l_Connection:Disconnect() end
+                        return
+                    end
+                    
+                    t = t + dt
+                    local cf = torso.CFrame
+                    local offset = math.sin(t * 5) * 5
+        
+                    bp.Position = torso.Position + cf.LookVector * (5 + offset)
+                    bg.CFrame = cf * CFrame.Angles(0, math.rad(180), 0)
+                end)
+            else
+                bp.MaxForce = Vector3.zero
+                bg.MaxTorque = Vector3.zero
+            end
+        end
+    })
+end
