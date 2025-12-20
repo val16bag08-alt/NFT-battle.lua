@@ -2992,7 +2992,7 @@ if Tabs.Build then
                     
                     t = t + dt
                     local cf = torso.CFrame
-                    local offset = math.sin(t * 5) * 5
+                    local offset = math.sin(t * 15) * 5
         
                     bp.Position = torso.Position + cf.LookVector * (5 + offset)
                     bg.CFrame = cf * CFrame.Angles(0, math.rad(180), 0)
