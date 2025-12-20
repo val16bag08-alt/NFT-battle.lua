@@ -2983,20 +2983,21 @@ if Tabs.Build then
                 bp.MaxForce = Vector3.new(1e6, 1e6, 1e6)
                 bg.MaxTorque = Vector3.new(1e6, 1e6, 1e6)
                 
-                local t = 0
-                l_Connection = RunService.RenderStepped:Connect(function(dt)
-                    if not main.Parent then
-                        if l_Connection then l_Connection:Disconnect() end
-                        return
-                    end
-                    
-                    t = t + dt
-                    local cf = torso.CFrame
-                    local offset = math.sin(t * 30) * 20
-        
-                    bp.Position = torso.Position + cf.LookVector * (2 + offset)
-                    bg.CFrame = cf * CFrame.Angles(0, math.rad(180), 0)
-                end)
+				local t = 0
+				l_Connection = RunService.RenderStepped:Connect(function(dt)
+				    if not main.Parent then
+				        if l_Connection then l_Connection:Disconnect() end
+				        return
+				    end
+				
+				    t = t + dt
+				    local cf = torso.CFrame
+							
+				    local offset = math.sin(t * 30) * 9
+				    bp.Position = torso.Position + cf.LookVector * (11 + offset)
+				
+				    bg.CFrame = cf * CFrame.Angles(0, math.rad(180), 0)
+				end)
             else
                 bp.MaxForce = Vector3.zero
                 bg.MaxTorque = Vector3.zero
