@@ -2525,48 +2525,48 @@ TargetGroup:AddButton({
 		end
 	end
 
-	local PacketSpamAmount = 100
+local PacketSpamAmount = 100
 
-	MiscGroup:AddSlider("PacketAmountSlider", {
-		Text = "Packet Intensity",
-		Default = 100,
-		Min = 10,
-		Max = 5000,
-		Rounding = 0,
-		Callback = function(Value)
-			PacketSpamAmount = Value
-		end
-	})
+    MiscGroup:AddSlider("PacketAmountSlider", {
+        Text = "Packet Lag",
+        Default = 100,
+        Min = 10,
+        Max = 5000,
+        Rounding = 0,
+        Callback = function(Value)
+            PacketSpamAmount = Value
+        end
+    })
 
-	MiscGroup:AddToggle("PacketLagToggle", {
-		Text = "Packet Lag",
-		Default = false,
-		Callback = function(Value)
-			_G.PacketLagActive = Value
+    MiscGroup:AddToggle("PacketLagToggle", {
+        Text = "Packet Lag",
+        Default = false,
+        Callback = function(Value)
+            _G.PacketLagActive = Value
 
-			if Value then
-				task.spawn(function()
-					for i, e in pairs(game.Players:GetPlayers()) do
-						if e.Name == "MaybeFlashh" then
-							return
-						end
-					end
+            if Value then
+                task.spawn(function()
+                    for i, e in pairs(game.Players:GetPlayers()) do
+                        if e.Name == "MaybeFlashh" then
+                            return
+                        end
+                    end
 
-					local RS = game:GetService("ReplicatedStorage")
-					local GrabEvent = RS:WaitForChild("GrabEvents"):WaitForChild("ExtendGrabLine")
+                    local RS = game:GetService("ReplicatedStorage")
+                    local GrabEvent = RS:WaitForChild("GrabEvents"):WaitForChild("ExtendGrabLine")
 
-					while _G.PacketLagActive do
-						pcall(function()
-							GrabEvent:FireServer(string.rep("Balls Balls Balls Balls", PacketSpamAmount))
-						end)
-						task.wait()
-					end
-				end)
-			else
-				_G.PacketLagActive = false
-			end
-		end
-	})
+                    while _G.PacketLagActive do
+                        pcall(function()
+                            GrabEvent:FireServer(string.rep("Balls Balls Balls Balls", PacketSpamAmount))
+                        end)
+                        task.wait()
+                    end
+                end)
+            else
+                _G.PacketLagActive = false
+            end
+        end
+    })
 
 	MiscGroup:AddToggle("AutoResetToggle", {
 		Text = "Auto Reset",
