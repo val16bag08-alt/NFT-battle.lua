@@ -1042,177 +1042,110 @@ end
 
 
 	TargetGroup:AddToggle("LoopKickToggle", {
-		Text = "Kick (spam grab)",
-		Default = false,
-		Callback = function(on)
-			kickLoopEnabled = on
-			
-			local target = selectedKickPlayer
-			if on and not target then
-			if Toggles.LoopKickToggle then Toggles.LoopKickToggle:SetValue(false) end
-			return
-			end
-			
-			if not on then    
-			        kickLoopEnabled = false    
-			        return    
-			    end    
-			
-			    task.spawn(function()    
-			        local RS = game:GetService("ReplicatedStorage")    
-			        local RunService = game:GetService("RunService")    
-			        local GE = RS:WaitForChild("GrabEvents")    
-			            
-			        local myChar = Player.Character    
-			        local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")    
-			        if not myRoot then return end    
-			            
-			        local savedPos = myRoot.CFrame    
-			        local dragging = false    
-			        local grabStartTime = 0    
-			            
-			        while kickLoopEnabled do    
-			            if not target or not target.Parent then    
-			                kickLoopEnabled = false    
-			                if Toggles.LoopKickToggle then Toggles.LoopKickToggle:SetValue(false) end    
-			                break    
-			            end    
-			
-			            local tChar = target.Character    
-			            local tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")    
-			            local tHum = tChar and tChar:FindFirstChild("Humanoid")    
-			                
-			            myChar = Player.Character    
-			            myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")    
-			
-			            if tRoot and tHum and tHum.Health > 0 and myRoot then    
-			                    
-			                tRoot.AssemblyLinearVelocity = Vector3.zero    
-			                tRoot.AssemblyAngularVelocity = Vector3.zero    
-			                tRoot.Velocity = Vector3.zero    
-			                    
-			                if not dragging then    
-			                    myRoot.CFrame = tRoot.CFrame    
-			                    myRoot.Velocity = Vector3.zero    
-			                        
-			                    pcall(function()    
-			                        tHum.PlatformStand = true    
-			                        tHum.Sit = true    
-			                        GE.SetNetworkOwner:FireServer(tRoot, myRoot.CFrame)    
-			                        GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)    
-			                    end)    
-			                        
-			                    if grabStartTime == 0 then grabStartTime = tick() end    
-			                    if tick() - grabStartTime > 0.35 then    
-			                        dragging = true    
-			                        grabStartTime = 0    
-			                    end    
-			                else    
-TargetGroup:AddToggle("LoopKickToggle", {
-    Text = "kick (spam grab)",
-    Default = false,
-    Callback = function(on)
-        kickLoopEnabled = on
-        
-        local target = selectedKickPlayer
-        if on and not target then 
-            if Toggles.LoopKickToggle then Toggles.LoopKickToggle:SetValue(false) end
-            return 
-        end
-
-        if not on then
-            kickLoopEnabled = false
-            return
-        end
-
-        task.spawn(function()
-            local RS = game:GetService("ReplicatedStorage")
-            local RunService = game:GetService("RunService")
-            local GE = RS:WaitForChild("GrabEvents")
-            
-            local myChar = Player.Character
-            local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
-            if not myRoot then return end
-            
-            local savedPos = myRoot.CFrame
-            local dragging = false
-            local grabStartTime = 0
-            
-            while kickLoopEnabled do
-                if not target or not target.Parent then
-                    kickLoopEnabled = false
-                    if Toggles.LoopKickToggle then Toggles.LoopKickToggle:SetValue(false) end
-                    break
-                end
-
-                local tChar = target.Character
-                local tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
-                local tHum = tChar and tChar:FindFirstChild("Humanoid")
-                
-                myChar = Player.Character
-                myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
-
-                if tRoot and tHum and tHum.Health > 0 and myRoot then
-                    
-                    tRoot.AssemblyLinearVelocity = Vector3.zero
-                    tRoot.AssemblyAngularVelocity = Vector3.zero
-                    tRoot.Velocity = Vector3.zero
-                    
-                    if not dragging then
-                        myRoot.CFrame = tRoot.CFrame
-                        myRoot.Velocity = Vector3.zero
-                        
-                        pcall(function()
-                            tHum.PlatformStand = true
-                            tHum.Sit = true
-                            GE.SetNetworkOwner:FireServer(tRoot, myRoot.CFrame)
-                            GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
-                        end)
-                        
-                        if grabStartTime == 0 then grabStartTime = tick() end
-                        if tick() - grabStartTime > 0.35 then
-                            dragging = true
-                            grabStartTime = 0
-                        end
-                    else
-                        myRoot.CFrame = savedPos
-                        myRoot.Velocity = Vector3.zero
-                        
-                        local lockPos = savedPos * CFrame.new(0, 17, 0)
-                        
-                        tRoot.CFrame = lockPos
-                        tRoot.Velocity = Vector3.zero
-                        tRoot.RotVelocity = Vector3.zero
-                        
-                        tHum.PlatformStand = true
-                        tHum.Sit = true
-                        
-                        pcall(function()
-                            GE.SetNetworkOwner:FireServer(tRoot, lockPos)
-                            GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
-                            GE.DestroyGrabLine:FireServer(tRoot)
-                            GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
-                        end)
-                    end
-                else
-                    dragging = false
-                    grabStartTime = 0
-                    if myRoot then
-                        myRoot.CFrame = savedPos
-                        myRoot.Velocity = Vector3.zero
-                    end
-                end
-                
-                RunService.Heartbeat:Wait()
-            end
-            
-            if myRoot then
-                myRoot.CFrame = savedPos
-                myRoot.Velocity = Vector3.zero
-            end
-        end)
-    end
-})
+	    Text = "kick (spam grab)",
+	    Default = false,
+	    Callback = function(on)
+	        kickLoopEnabled = on
+	        
+	        local target = selectedKickPlayer
+	        if on and not target then 
+	            if Toggles.LoopKickToggle then Toggles.LoopKickToggle:SetValue(false) end
+	            return 
+	        end
+	
+	        if not on then
+	            kickLoopEnabled = false
+	            return
+	        end
+	
+	        task.spawn(function()
+	            local RS = game:GetService("ReplicatedStorage")
+	            local RunService = game:GetService("RunService")
+	            local GE = RS:WaitForChild("GrabEvents")
+	            
+	            local myChar = Player.Character
+	            local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
+	            if not myRoot then return end
+	            
+	            local savedPos = myRoot.CFrame
+	            local dragging = false
+	            local grabStartTime = 0
+	            
+	            while kickLoopEnabled do
+	                if not target or not target.Parent then
+	                    kickLoopEnabled = false
+	                    if Toggles.LoopKickToggle then Toggles.LoopKickToggle:SetValue(false) end
+	                    break
+	                end
+	
+	                local tChar = target.Character
+	                local tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
+	                local tHum = tChar and tChar:FindFirstChild("Humanoid")
+	                
+	                myChar = Player.Character
+	                myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
+	
+	                if tRoot and tHum and tHum.Health > 0 and myRoot then
+	                    
+	                    tRoot.AssemblyLinearVelocity = Vector3.zero
+	                    tRoot.AssemblyAngularVelocity = Vector3.zero
+	                    tRoot.Velocity = Vector3.zero
+	                    
+	                    if not dragging then
+	                        myRoot.CFrame = tRoot.CFrame
+	                        myRoot.Velocity = Vector3.zero
+	                        
+	                        pcall(function()
+	                            tHum.PlatformStand = true
+	                            tHum.Sit = true
+	                            GE.SetNetworkOwner:FireServer(tRoot, myRoot.CFrame)
+	                            GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
+	                        end)
+	                        
+	                        if grabStartTime == 0 then grabStartTime = tick() end
+	                        if tick() - grabStartTime > 0.35 then
+	                            dragging = true
+	                            grabStartTime = 0
+	                        end
+	                    else
+	                        myRoot.CFrame = savedPos
+	                        myRoot.Velocity = Vector3.zero
+	                        
+	                        local lockPos = savedPos * CFrame.new(0, 17, 0)
+	                        
+	                        tRoot.CFrame = lockPos
+	                        tRoot.Velocity = Vector3.zero
+	                        tRoot.RotVelocity = Vector3.zero
+	                        
+	                        tHum.PlatformStand = true
+	                        tHum.Sit = true
+	                        
+	                        pcall(function()
+	                            GE.SetNetworkOwner:FireServer(tRoot, lockPos)
+	                            GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
+	                            GE.DestroyGrabLine:FireServer(tRoot)
+	                            GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
+	                        end)
+	                    end
+	                else
+	                    dragging = false
+	                    grabStartTime = 0
+	                    if myRoot then
+	                        myRoot.CFrame = savedPos
+	                        myRoot.Velocity = Vector3.zero
+	                    end
+	                end
+	                
+	                RunService.Heartbeat:Wait()
+	            end
+	            
+	            if myRoot then
+	                myRoot.CFrame = savedPos
+	                myRoot.Velocity = Vector3.zero
+	            end
+	        end)
+	    end
+	})
 
 	TargetGroup:AddToggle("LoopKillToggle", {
 		Text = "Loop kill",
@@ -1291,132 +1224,132 @@ TargetGroup:AddToggle("LoopKickToggle", {
 		end
 	})
 
-TargetGroup:AddToggle("LoopKickToggle", {
-    Text = "Loop Kick (grab + blob)",
-    Default = false,
-    Callback = function(on)
-        kickLoopEnabled = on
-        
-        local target = selectedKickPlayer
-        if on and not target then 
-            if Toggles.LoopKickToggle then Toggles.LoopKickToggle:SetValue(false) end
-            return 
-        end
-
-        local char = Player.Character
-        local hum = char and char:FindFirstChild("Humanoid")
-        local seat = hum and hum.SeatPart
-
-        if on and (not seat or seat.Parent.Name ~= "CreatureBlobman") then
-            if Toggles.LoopKickToggle then Toggles.LoopKickToggle:SetValue(false) end
-            return
-        end
-
-        if not on then 
-            kickLoopEnabled = false 
-            return 
-        end
-
-        task.spawn(function()
-            local RS = game:GetService("ReplicatedStorage")
-            local GE = RS:WaitForChild("GrabEvents")
-            local RunService = game:GetService("RunService")
-            
-            local blob = seat.Parent
-            local blobRoot = blob:FindFirstChild("HumanoidRootPart") or blob.PrimaryPart
-            local scriptObj = blob:FindFirstChild("BlobmanSeatAndOwnerScript")
-            
-            local CG = scriptObj and scriptObj:FindFirstChild("CreatureGrab")
-            local CD = scriptObj and scriptObj:FindFirstChild("CreatureDrop")
-            
-            local R_Det = blob:FindFirstChild("RightDetector")
-            local R_Weld = R_Det and (R_Det:FindFirstChild("RightWeld") or R_Det:FindFirstChildWhichIsA("Weld"))
-            
-            local SavedPos = blobRoot.CFrame 
-            
-            local tChar = target.Character
-            local tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
-
-            if tRoot and blobRoot then
-                local bringStart = tick()
-                while tick() - bringStart < 0.35 do
-                    if not kickLoopEnabled then break end
-                    
-                    blobRoot.CFrame = tRoot.CFrame
-                    blobRoot.Velocity = Vector3.zero
-                    
-                    pcall(function()
-                        if CG and R_Det then CG:FireServer(R_Det, tRoot, R_Weld) end
-                        GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
-                        GE.SetNetworkOwner:FireServer(tRoot, blobRoot.CFrame)
-                    end)
-                    RunService.Heartbeat:Wait()
-                end
-                
-                blobRoot.CFrame = SavedPos
-                blobRoot.Velocity = Vector3.zero
-                task.wait(0.05)
-            end
-
-            local packetTimer = 0
-            
-            while kickLoopEnabled do
-                if not target or not target.Parent or not target.Character then
-                    break
-                end
-
-                local tChar = target.Character
-                local tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
-                local tHum = tChar and tChar:FindFirstChild("Humanoid")
-
-                if tRoot and tHum and tHum.Health > 0 and blobRoot then
-                    
-                    blobRoot.CFrame = SavedPos
-                    blobRoot.Velocity = Vector3.zero
-                    
-                    local lockPos = SavedPos * CFrame.new(0, 23, 0)
-                    
-                    tRoot.CFrame = lockPos
-                    tRoot.Velocity = Vector3.zero
-                    tRoot.RotVelocity = Vector3.zero
-                    
-                    if tick() - packetTimer > 0.05 then
-                        packetTimer = tick()
-                        pcall(function()
-                            tHum.PlatformStand = true
-                            tHum.Sit = true
-                            
-                            GE.SetNetworkOwner:FireServer(tRoot, lockPos)
-                            
-                            if R_Det then
-                                local weld = R_Det:FindFirstChild("RightWeld") or R_Det:FindFirstChildWhichIsA("Weld")
-                                if weld then CD:FireServer(weld) end
-                            end
-                            GE.DestroyGrabLine:FireServer(tRoot)
-                            
-                            if R_Det then CG:FireServer(R_Det, tRoot, R_Weld) end
-                            GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
-                        end)
-                    end
-                else
-                    blobRoot.CFrame = SavedPos
-                    blobRoot.Velocity = Vector3.zero
-                end
-                
-                if not kickLoopEnabled then break end
-                RunService.Heartbeat:Wait()
-            end
-            
-            kickLoopEnabled = false
-            if Toggles.LoopKickToggle then Toggles.LoopKickToggle:SetValue(false) end
-            
-            if blobRoot then
-                blobRoot.CFrame = SavedPos
-                blobRoot.Velocity = Vector3.zero
-            end
-        end)
-    end
-})
+	TargetGroup:AddToggle("LoopKickToggle", {
+	    Text = "Loop Kick (grab + blob)",
+	    Default = false,
+	    Callback = function(on)
+	        kickLoopEnabled = on
+	        
+	        local target = selectedKickPlayer
+	        if on and not target then 
+	            if Toggles.LoopKickToggle then Toggles.LoopKickToggle:SetValue(false) end
+	            return 
+	        end
+	
+	        local char = Player.Character
+	        local hum = char and char:FindFirstChild("Humanoid")
+	        local seat = hum and hum.SeatPart
+	
+	        if on and (not seat or seat.Parent.Name ~= "CreatureBlobman") then
+	            if Toggles.LoopKickToggle then Toggles.LoopKickToggle:SetValue(false) end
+	            return
+	        end
+	
+	        if not on then 
+	            kickLoopEnabled = false 
+	            return 
+	        end
+	
+	        task.spawn(function()
+	            local RS = game:GetService("ReplicatedStorage")
+	            local GE = RS:WaitForChild("GrabEvents")
+	            local RunService = game:GetService("RunService")
+	            
+	            local blob = seat.Parent
+	            local blobRoot = blob:FindFirstChild("HumanoidRootPart") or blob.PrimaryPart
+	            local scriptObj = blob:FindFirstChild("BlobmanSeatAndOwnerScript")
+	            
+	            local CG = scriptObj and scriptObj:FindFirstChild("CreatureGrab")
+	            local CD = scriptObj and scriptObj:FindFirstChild("CreatureDrop")
+	            
+	            local R_Det = blob:FindFirstChild("RightDetector")
+	            local R_Weld = R_Det and (R_Det:FindFirstChild("RightWeld") or R_Det:FindFirstChildWhichIsA("Weld"))
+	            
+	            local SavedPos = blobRoot.CFrame 
+	            
+	            local tChar = target.Character
+	            local tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
+	
+	            if tRoot and blobRoot then
+	                local bringStart = tick()
+	                while tick() - bringStart < 0.35 do
+	                    if not kickLoopEnabled then break end
+	                    
+	                    blobRoot.CFrame = tRoot.CFrame
+	                    blobRoot.Velocity = Vector3.zero
+	                    
+	                    pcall(function()
+	                        if CG and R_Det then CG:FireServer(R_Det, tRoot, R_Weld) end
+	                        GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
+	                        GE.SetNetworkOwner:FireServer(tRoot, blobRoot.CFrame)
+	                    end)
+	                    RunService.Heartbeat:Wait()
+	                end
+	                
+	                blobRoot.CFrame = SavedPos
+	                blobRoot.Velocity = Vector3.zero
+	                task.wait(0.05)
+	            end
+	
+	            local packetTimer = 0
+	            
+	            while kickLoopEnabled do
+	                if not target or not target.Parent or not target.Character then
+	                    break
+	                end
+	
+	                local tChar = target.Character
+	                local tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
+	                local tHum = tChar and tChar:FindFirstChild("Humanoid")
+	
+	                if tRoot and tHum and tHum.Health > 0 and blobRoot then
+	                    
+	                    blobRoot.CFrame = SavedPos
+	                    blobRoot.Velocity = Vector3.zero
+	                    
+	                    local lockPos = SavedPos * CFrame.new(0, 23, 0)
+	                    
+	                    tRoot.CFrame = lockPos
+	                    tRoot.Velocity = Vector3.zero
+	                    tRoot.RotVelocity = Vector3.zero
+	                    
+	                    if tick() - packetTimer > 0.05 then
+	                        packetTimer = tick()
+	                        pcall(function()
+	                            tHum.PlatformStand = true
+	                            tHum.Sit = true
+	                            
+	                            GE.SetNetworkOwner:FireServer(tRoot, lockPos)
+	                            
+	                            if R_Det then
+	                                local weld = R_Det:FindFirstChild("RightWeld") or R_Det:FindFirstChildWhichIsA("Weld")
+	                                if weld then CD:FireServer(weld) end
+	                            end
+	                            GE.DestroyGrabLine:FireServer(tRoot)
+	                            
+	                            if R_Det then CG:FireServer(R_Det, tRoot, R_Weld) end
+	                            GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
+	                        end)
+	                    end
+	                else
+	                    blobRoot.CFrame = SavedPos
+	                    blobRoot.Velocity = Vector3.zero
+	                end
+	                
+	                if not kickLoopEnabled then break end
+	                RunService.Heartbeat:Wait()
+	            end
+	            
+	            kickLoopEnabled = false
+	            if Toggles.LoopKickToggle then Toggles.LoopKickToggle:SetValue(false) end
+	            
+	            if blobRoot then
+	                blobRoot.CFrame = SavedPos
+	                blobRoot.Velocity = Vector3.zero
+	            end
+	        end)
+	    end
+	})
 
 	local loopKickDualActive = false
 	TargetGroup:AddToggle("DualHandLoopKick", {
