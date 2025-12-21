@@ -1055,7 +1055,9 @@ end
 	        
 	        local target = selectedKickPlayer
 	        if on and not target then 
-	            if Toggles.LoopKickToggle then Toggles.LoopKickToggle:SetValue(false) end
+	            if Toggles.LoopKickToggle then
+	                Toggles.LoopKickToggle:SetValue(false)
+	            end
 	            return 
 	        end
 	
@@ -1068,87 +1070,82 @@ end
 	            local RS = game:GetService("ReplicatedStorage")
 	            local RunService = game:GetService("RunService")
 	            local GE = RS:WaitForChild("GrabEvents")
-	            
-	            local myChar = Player.Character
-	            local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
-	            if not myRoot then return end
-	            
+	
+	            local Player = game.Players.LocalPlayer
+	
+	            local myChar = Player.Character or Player.CharacterAdded:Wait()
+	            local myRoot = myChar:WaitForChild("HumanoidRootPart")
+	
 	            local savedPos = myRoot.CFrame
-	            local dragging = false
-	            local grabStartTime = 0
-	            
+	            local lockedCFrame = nil
+	
 	            while kickLoopEnabled do
 	                if not target or not target.Parent then
 	                    kickLoopEnabled = false
-	                    if Toggles.LoopKickToggle then Toggles.LoopKickToggle:SetValue(false) end
+	                    if Toggles.LoopKickToggle then
+	                        Toggles.LoopKickToggle:SetValue(false)
+	                    end
 	                    break
 	                end
 	
 	                local tChar = target.Character
 	                local tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
 	                local tHum = tChar and tChar:FindFirstChild("Humanoid")
-	                
-	                myChar = Player.Character
-	                myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
 	
-	                if tRoot and tHum and tHum.Health > 0 and myRoot then
-	                    
+	                if tRoot and tHum and tHum.Health > 0 then
+	                    -- сохраняем позицию ОДИН раз
+	                    if not lockedCFrame then
+	                        lockedCFrame = tRoot.CFrame
+	                    end
+	
+	                    -- ЖЁСТКИЙ ФРИЗ ПОЗИЦИИ
+	                    tRoot.CFrame = lockedCFrame
 	                    tRoot.AssemblyLinearVelocity = Vector3.zero
 	                    tRoot.AssemblyAngularVelocity = Vector3.zero
 	                    tRoot.Velocity = Vector3.zero
-	                    
-	                    if not dragging then
-	                        myRoot.CFrame = tRoot.CFrame
-	                        myRoot.Velocity = Vector3.zero
-	                        
-	                        pcall(function()
-	                            tHum.PlatformStand = true
-	                            tHum.Sit = true
-	                            GE.SetNetworkOwner:FireServer(tRoot, myRoot.CFrame)
-	                            GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
-	                        end)
-	                        
-	                        if grabStartTime == 0 then grabStartTime = tick() end
-	                        if tick() - grabStartTime > 0.35 then
-	                            dragging = true
-	                            grabStartTime = 0
-	                        end
-	                    else
-	                        myRoot.CFrame = savedPos
-	                        myRoot.Velocity = Vector3.zero
-	                        
-	                        local lockPos = savedPos * CFrame.new(0, 17, 0)
-	                        
-	                        tRoot.CFrame = lockPos
-	                        tRoot.Velocity = Vector3.zero
-	                        tRoot.RotVelocity = Vector3.zero
-	                        
-	                        tHum.PlatformStand = true
-	                        tHum.Sit = false
-	                        
-	                        pcall(function()
-	                            GE.SetNetworkOwner:FireServer(tRoot, lockPos)
-	                            GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
-	                            GE.DestroyGrabLine:FireServer(tRoot)
-	                            GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
-	                        end)
-	                    end
+	                    tRoot.RotVelocity = Vector3.zero
+	
+	                    -- ЛОЧИМ ГУМАНОИД
+	                    tHum:ChangeState(Enum.HumanoidStateType.Physics)
+	                    tHum.PlatformStand = true
+	                    tHum.AutoRotate = false
+	                    tHum.Sit = true
+	
+	                    -- Сервер не имеет права двигать
+	                    pcall(function()
+	                        GE.SetNetworkOwner:FireServer(tRoot, lockedCFrame)
+	                        GE.DestroyGrabLine:FireServer(tRoot)
+	                        GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
+	                    end)
 	                else
-	                    dragging = false
-	                    grabStartTime = 0
-	                    if myRoot then
-	                        myRoot.CFrame = savedPos
-	                        myRoot.Velocity = Vector3.zero
-	                    end
+	                    lockedCFrame = nil
 	                end
-	                
+	
+	                -- ты сам НИКУДА не двигаешься
+	                if myRoot then
+	                    myRoot.CFrame = savedPos
+	                    myRoot.Velocity = Vector3.zero
+	                end
+	
 	                RunService.Heartbeat:Wait()
 	            end
-	            
+	
+	            -- ВОЗВРАТ СОСТОЯНИЯ
+	            local tChar = target and target.Character
+	            local tHum = tChar and tChar:FindFirstChild("Humanoid")
+	
+	            if tHum then
+	                tHum.PlatformStand = false
+	                tHum.AutoRotate = true
+	                tHum.Sit = false
+	            end
+	
 	            if myRoot then
 	                myRoot.CFrame = savedPos
 	                myRoot.Velocity = Vector3.zero
 	            end
+	
+	            lockedCFrame = nil
 	        end)
 	    end
 	})
