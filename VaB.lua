@@ -1047,107 +1047,162 @@ end
 		end
 	})
 
+	local Player = game.Players.LocalPlayer
+	local kickLoopEnabled = false
+	local selectedKickPlayer = selectedKickPlayer
+	
+	local function freezeTarget(tRoot, lockCFrame)
+	 if not tRoot then return end
+	
+	 local bp = tRoot:FindFirstChild("KickFreezeBP")
+	 if not bp then
+	  bp = Instance.new("BodyPosition")
+	  bp.Name = "KickFreezeBP"
+	  bp.MaxForce = Vector3.new(1e9, 1e9, 1e9)
+	  bp.P = 50000
+	  bp.D = 2000
+	  bp.Parent = tRoot
+	 end
+	 bp.Position = lockCFrame.Position
+	
+	 local bg = tRoot:FindFirstChild("KickFreezeBG")
+	 if not bg then
+	  bg = Instance.new("BodyGyro")
+	  bg.Name = "KickFreezeBG"
+	  bg.MaxTorque = Vector3.new(1e9, 1e9, 1e9)
+	  bg.P = 50000
+	  bg.D = 2000
+	  bg.Parent = tRoot
+	 end
+	 bg.CFrame = lockCFrame
+	end
+	
+	local function unfreezeTarget(tRoot)
+	 if not tRoot then return end
+	 if tRoot:FindFirstChild("KickFreezeBP") then
+	  tRoot.KickFreezeBP:Destroy()
+	 end
+	 if tRoot:FindFirstChild("KickFreezeBG") then
+	  tRoot.KickFreezeBG:Destroy()
+	 end
+	end
+	
 	TargetGroup:AddToggle("LoopKickToggle", {
-	    Text = "Kick (spam grab)",
-	    Default = false,
-	    Callback = function(on)
-	        kickLoopEnabled = on
-	        
-	        local target = selectedKickPlayer
-	        if on and not target then 
-	            if Toggles.LoopKickToggle then
-	                Toggles.LoopKickToggle:SetValue(false)
-	            end
-	            return 
-	        end
+	 Text = "Kick (spam grab)",
+	 Default = false,
+	 Callback = function(on)
+	  kickLoopEnabled = on
 	
-	        if not on then
-	            kickLoopEnabled = false
-	            return
-	        end
+	  local target = selectedKickPlayer
+	  if on and not target then
+	   if Toggles.LoopKickToggle then
+	    Toggles.LoopKickToggle:SetValue(false)
+	   end
+	   return
+	  end
 	
-	        task.spawn(function()
-	            local RS = game:GetService("ReplicatedStorage")
-	            local RunService = game:GetService("RunService")
-	            local GE = RS:WaitForChild("GrabEvents")
+	  if not on then
+	   kickLoopEnabled = false
+	   return
+	  end
 	
-	            local Player = game.Players.LocalPlayer
+	  task.spawn(function()
+	   local RS = game:GetService("ReplicatedStorage")
+	   local RunService = game:GetService("RunService")
+	   local GE = RS:WaitForChild("GrabEvents")
 	
-	            local myChar = Player.Character or Player.CharacterAdded:Wait()
-	            local myRoot = myChar:WaitForChild("HumanoidRootPart")
+	   local myChar = Player.Character
+	   local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
+	   if not myRoot then return end
 	
-	            local savedPos = myRoot.CFrame
-	            local lockedCFrame = nil
+	   local savedPos = myRoot.CFrame
+	   local dragging = false
+	   local grabStartTime = 0
 	
-	            while kickLoopEnabled do
-	                if not target or not target.Parent then
-	                    kickLoopEnabled = false
-	                    if Toggles.LoopKickToggle then
-	                        Toggles.LoopKickToggle:SetValue(false)
-	                    end
-	                    break
-	                end
-	
-	                local tChar = target.Character
-	                local tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
-	                local tHum = tChar and tChar:FindFirstChild("Humanoid")
-	
-	                if tRoot and tHum and tHum.Health > 0 then
-	                    -- сохраняем позицию ОДИН раз
-	                    if not lockedCFrame then
-	                        lockedCFrame = tRoot.CFrame
-	                    end
-	
-	                    -- ЖЁСТКИЙ ФРИЗ ПОЗИЦИИ
-	                    tRoot.CFrame = lockedCFrame
-	                    tRoot.AssemblyLinearVelocity = Vector3.zero
-	                    tRoot.AssemblyAngularVelocity = Vector3.zero
-	                    tRoot.Velocity = Vector3.zero
-	                    tRoot.RotVelocity = Vector3.zero
-	
-	                    -- ЛОЧИМ ГУМАНОИД
-	                    tHum:ChangeState(Enum.HumanoidStateType.Physics)
-	                    tHum.PlatformStand = true
-	                    tHum.AutoRotate = false
-	                    tHum.Sit = true
-	
-	                    -- Сервер не имеет права двигать
-	                    pcall(function()
-	                        GE.SetNetworkOwner:FireServer(tRoot, lockedCFrame)
-	                        GE.DestroyGrabLine:FireServer(tRoot)
-	                        GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
-	                    end)
-	                else
-	                    lockedCFrame = nil
-	                end
-	
-	                -- ты сам НИКУДА не двигаешься
-	                if myRoot then
-	                    myRoot.CFrame = savedPos
-	                    myRoot.Velocity = Vector3.zero
-	                end
-	
-	                RunService.Heartbeat:Wait()
-	            end
-	
-	            -- ВОЗВРАТ СОСТОЯНИЯ
-	            local tChar = target and target.Character
-	            local tHum = tChar and tChar:FindFirstChild("Humanoid")
-	
-	            if tHum then
-	                tHum.PlatformStand = false
-	                tHum.AutoRotate = true
-	                tHum.Sit = false
-	            end
-	
-	            if myRoot then
-	                myRoot.CFrame = savedPos
-	                myRoot.Velocity = Vector3.zero
-	            end
-	
-	            lockedCFrame = nil
-	        end)
+	   while kickLoopEnabled do
+	    if not target or not target.Parent then
+	     kickLoopEnabled = false
+	     if Toggles.LoopKickToggle then
+	      Toggles.LoopKickToggle:SetValue(false)
+	     end
+	     break
 	    end
+	
+	    local tChar = target.Character
+	    local tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
+	    local tHum = tChar and tChar:FindFirstChild("Humanoid")
+	
+	    myChar = Player.Character
+	    myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
+	
+	    if tRoot and tHum and tHum.Health > 0 and myRoot then
+	     tRoot.AssemblyLinearVelocity = Vector3.zero
+	     tRoot.AssemblyAngularVelocity = Vector3.zero
+	
+	     if not dragging then
+	      myRoot.CFrame = tRoot.CFrame
+	      myRoot.Velocity = Vector3.zero
+	
+	      pcall(function()
+	       tHum.PlatformStand = true
+	       tHum.Sit = true
+	       GE.SetNetworkOwner:FireServer(tRoot, myRoot.CFrame)
+	       GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
+	      end)
+	
+	      if grabStartTime == 0 then
+	       grabStartTime = tick()
+	      end
+	
+	      if tick() - grabStartTime > 0.35 then
+	       dragging = true
+	       grabStartTime = 0
+	      end
+	     else
+	      myRoot.CFrame = savedPos
+	      myRoot.Velocity = Vector3.zero
+	
+	      local lockPos = savedPos * CFrame.new(0, 17, 0)
+	
+	      freezeTarget(tRoot, lockPos)
+	
+	      tHum.PlatformStand = true
+	      tHum.Sit = false
+	
+	      pcall(function()
+	       GE.SetNetworkOwner:FireServer(tRoot, lockPos)
+	       GE.DestroyGrabLine:FireServer(tRoot)
+	       GE.CreateGrabLine:FireServer(tRoot, Vector3.zero, tRoot.Position, false)
+	      end)
+	     end
+	    else
+	     dragging = false
+	     grabStartTime = 0
+	
+	     if tRoot then
+	      unfreezeTarget(tRoot)
+	     end
+	
+	     if myRoot then
+	      myRoot.CFrame = savedPos
+	      myRoot.Velocity = Vector3.zero
+	     end
+	    end
+	
+	    RunService.Heartbeat:Wait()
+	   end
+	
+	   if target and target.Character then
+	    local tr = target.Character:FindFirstChild("HumanoidRootPart")
+	    unfreezeTarget(tr)
+	   end
+	
+	   if myRoot then
+	    myRoot.CFrame = savedPos
+	    myRoot.Velocity = Vector3.zero
+	   end
+	  end)
+	 end
 	})
 
 	TargetGroup:AddToggle("LoopKillToggle", {
