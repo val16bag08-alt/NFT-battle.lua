@@ -1040,12 +1040,6 @@ end
 		end
 	})
 
-	TargetGroup:AddButton({
-		Text = "spawn blobman (Required)",
-		Func = function()
-			spawnBlobman()
-		end
-	})
 
 	TargetGroup:AddToggle("LoopKickToggle", {
 	    Text = "Kick (spam grab)",
@@ -1147,6 +1141,7 @@ end
 	        end)
 	    end
 	})
+
 	TargetGroup:AddToggle("LoopKillToggle", {
 		Text = "Loop kill",
 		Default = false,
